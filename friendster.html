@@ -1,0 +1,38 @@
+<head>
+  <title>friendster</title>
+  <script type="text/javascript">
+    var OnLoadCallback = function() {
+      console.log('loading google calendar api');
+      gapi.client.setApiKey('AIzaSyACRc-SGQocyxZCNH1w5MIf_URgor_Tf4A');
+      gapi.client.load('calendar', 'v3', function() {
+        console.log('gcal initialized');
+        var request = gapi.client.calendar.calendars.get({
+          'calendarId': 'primary'
+        });
+
+        console.log(request);
+
+        request.execute(function(resp) {
+          console.log('response: ', resp);
+        });
+      });
+    };
+  </script>
+  <script src="https://apis.google.com/js/client.js?onload=OnLoadCallback"></script>
+</head>
+
+<body>
+  {{loginButtons}}
+  {{> hello}}
+  {{> gCalendar}}
+</body>
+
+<template name="gCalendar">
+  {{load}}
+</template>
+
+<template name="hello">
+  <h1>Hello World!</h1>
+  {{greeting}}
+  <input type="button" value="Click" />
+</template>
