@@ -1,34 +1,27 @@
 <head>
   <title>friendster</title>
-  <script type="text/javascript">
-    var OnLoadCallback = function() {
-      console.log('loading google calendar api');
-      gapi.client.setApiKey('AIzaSyACRc-SGQocyxZCNH1w5MIf_URgor_Tf4A');
-      gapi.client.load('calendar', 'v3', function() {
-        console.log('gcal initialized');
-        var request = gapi.client.calendar.calendars.get({
-          'calendarId': 'primary'
-        });
-
-        console.log(request);
-
-        request.execute(function(resp) {
-          console.log('response: ', resp);
-        });
-      });
-    };
-  </script>
-  <script src="https://apis.google.com/js/client.js?onload=OnLoadCallback"></script>
+  <script src="https://apis.google.com/js/client.js"></script>
 </head>
 
 <body>
   {{loginButtons}}
   {{> hello}}
-  {{> gCalendar}}
+  {{> gCalendars}}
 </body>
 
-<template name="gCalendar">
-  {{load}}
+<template name="gCalendars">
+  {{#if select_calendars}}
+  <div class="calendars">
+    <ul>
+      {{#each calendars}}
+        {{> calendar}}
+      {{/each}}
+    </ul>
+  {{/if}}
+</template>
+
+<template name="calendar">
+  <li>{{id}} - {{summary}}</li>
 </template>
 
 <template name="hello">
