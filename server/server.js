@@ -6,6 +6,14 @@ Meteor.startup(function () {
 
   Meteor.publish('calendarData', function() {
     return Calendars.find({});
+  });
+
+  Meteor.publish('taskData', function() {
+    return Tasks.find({});
+  });
+
+  Meteor.publish('eventData', function() {
+    return Events.find({});
   })
 
   Meteor.methods({

@@ -4,19 +4,28 @@
 </head>
 
 <body>
+  {{> page}}
   <div class="container-fluid">
-    <div class="row-fluid">{{loginButtons}}</div>
-    <div class="row-fluid">
-      <div class="span4">
-        {{> dataButtons}}
-      </div>
-      <div class="span8">
-        {{> gCalendars}}
-        {{> fbookFriends}}
-      </div>
+  {{renderPage}}
+</div>
+</body>
+
+<template name="page">
+  {{currentPage}}
+</template>
+
+<template name="main_page">
+  <div class="row-fluid">{{loginButtons}}</div>
+  <div class="row-fluid">
+    <div class="span4">
+      {{> dataButtons}}
+    </div>
+    <div class="span8">
+      {{> gCalendars}}
+      {{> fbookFriends}}
     </div>
   </div>
-</body>
+</template>
 
 <template name="dataButtons">
   <h3>Google Calendar buttons</h3>

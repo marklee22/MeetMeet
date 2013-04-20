@@ -1,0 +1,313 @@
+body{
+  background:#f4f8f9;
+}
+
+#Todos{
+  position:absolute;
+  left:50%;
+  margin-left:-85px;
+  width:579px;
+  top:200px;
+}
+
+#Logo{
+  position:absolute;
+  background: url('/calendar/Logo.png');
+  width:584px;
+  height:174px;
+  top:50px;
+  left:50%;
+  margin-left:-292px;
+}
+
+.Close{
+  width:20px;
+  height:20px;
+  position:absolute;
+  right:75px;
+  top:10px;
+  cursor:pointer;
+  background:url('/calendar/Close.png');
+}
+
+#DateStr{
+  position:absolute;
+  top:48px;
+  left:100px;
+  text-align:center;
+  width:218px;
+  font-family:Calibri;
+  color:#fff;
+  font-size:18px;
+}
+
+#LastMonth{
+  position:absolute;
+  top:44px;
+  width:28px;
+  height:28px;
+  background:transparent;
+  left:61px;
+}
+
+#NextMonth{
+  position:absolute;
+  top:44px;
+  width:28px;
+  height:28px;
+  background:transparent;
+  right:52px;
+}
+
+#Calendar{
+  position:absolute;
+  top:212px;
+  left:50%;
+  margin-left:-485px;
+  width:410px;
+}
+
+#CalendarTop{
+  width:410px;
+  height:105px;
+  background:url('/calendar/CalendarTop.png');
+}
+
+#NumberArea{
+  width:304px;
+  margin-top:-11px;
+  margin-left:48px;
+}
+
+#CalendarBottom{
+  width:410px;
+  height:30px;
+  background:url('/calendar/CalendarBottom.png');
+}
+
+.Day{
+  width:40px;
+  height:28px;
+  padding-top:12px;
+  text-align:center;
+  display:inline-block;
+  font-family:Calibri;
+}
+
+.Day:hover,.DaySelected{
+  background:url('/calendar/CalendarHighlight.png');
+}
+
+#CalendarDays{
+  position:relative;
+  width:410px;
+  padding:10px;
+  background:url('/calendar/CalendarRow.png');
+  background-repeat:repeat-y;
+}
+
+.Clear{
+  margin:0;
+  padding:0;
+}
+
+#TodosTop{
+  background:url('/calendar/Todo_Top.png');
+  width:579px;
+  height:152px;
+}
+
+#TodosButton{
+  position:absolute;
+  top:57px;
+  left:53px;
+  height:30px;
+  width:30px;
+  background:url('/calendar/Button.png');
+  cursor:pointer;
+}#TodosEdit{
+  font-size:18px;
+  font-family:Calibri;
+  color:#2F2F2F;
+  border:0;
+  padding:0;
+  margin:0;
+  background:transparent;
+  width:405px;
+  height:30px;
+  margin-top:-4px;
+  margin-left:-1px;
+}#TodosButton:active{
+  background:url('/calendar/ButtonH.png');
+}#Preloader{
+  background:url('/calendar/ButtonH.png');
+  display:none;
+}.TodosRow{
+  background:url('/calendar/Todo_White.png');
+  width:579px;
+  height:40px;
+  position:relative;
+}.TodosRowAlt{
+  background:url('/calendar/Todo_Grey.png');
+  width:579px;
+  height:40px;
+  position:relative;
+}#TodosBottom{
+  background:url('/calendar/Todo_Bottom.png');
+  width:579px;
+  height:69px;
+}.Checked{
+  width:26px;
+  height:21px;
+  position:absolute;
+  top:9.5px;
+  left:57px;
+  background:url('/calendar/BoxCheck.png');
+}.Unchecked{
+  width:26px;
+  height:21px;
+  position:absolute;
+  top:9.5px;
+  left:57px;
+  background:url('/calendar/BoxUncheck.png');
+}.Task{
+  font-family:Calibri;
+  font-size:18px;
+  color:#2F2F2F;
+  position:absolute;
+  top:9.5px;
+  left:115px;
+}#TitleDate{
+  position:absolute;
+  color:#2F2F2F;
+  font-family:Calibri;
+  top:122px;
+  left:108px;
+  font-size:22px;
+}.Done{
+  color:#4e4e4e;
+  text-decoration:line-through;
+}#Login{
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin-left:-190px;
+  margin-top:-200px;
+}#LoginTop{
+  width:380px;
+  height:239px;
+  background:url('/calendar/LoginTop.png');
+}#ButtonRow{
+  width:380px;
+  height:42px;
+}#LoginBButton{
+  width:139px;
+  height:42px;
+  float:left;
+  background:url('/calendar/LoginBButton.png');
+}#LoginButton{
+  width:119px;
+  height:42px;
+  float:left;
+  cursor:pointer;
+  background:url('/calendar/LoginButton.png');
+}
+
+#LoginButton:active{
+  background:url('/calendar/LoginButtonClicked.png');
+}
+
+#PreloadButton {
+  background:url('/calendar/LoginButtonClicked.png');
+  display:none;
+}
+
+#LoginAButton{
+  width:122px;
+  height:42px;
+  float:left;
+  background:url('/calendar/LoginAButton.png');
+}
+
+#LoginBottom{
+  width:380px;
+  height:66px;
+  background:url('/calendar/LoginBottom.png');
+}#Username{
+  position:absolute;
+  top:125px;
+  left:130px;
+  padding:5px;
+  font-size:13px;
+  background:transparent;
+  border:0;
+}#Password{
+  position:absolute;
+  top:188px;
+  left:130px;
+  font-size:13px;
+  background:transparent;
+  border:0;
+  color:#FFF;
+}#Username:focus,#Username:hover,#Username:active,#Username:target,#Password:focus,#Password:hover,#Password:active,#Password:target,#TodosEdit:focus,#TodosEdit:hover,#TodosEdit:active,#TodosEdit:target{
+  border:0;
+  outline:0;
+}
+
+/* Friendster Calendar CSS */
+#cal {
+  width: 100%;
+  min-height: 400px;
+  border: 1px solid black;
+}
+
+#calTop {
+  width: 100%;
+  height: 50px;
+  border: 1px solid black;
+}
+
+#lastMonth {
+  float: left;
+  width: 10%;
+  margin: auto;
+}
+
+#nextMonth {
+  float: right;
+  width: 10%;
+  margin: auto;
+}
+
+#dateStr {
+  display: inline;
+  width: 80%;
+  float: left;
+  margin: auto;
+  text-align: center;
+}
+
+#calendarDays{
+  position:relative;
+  width:410px;
+  padding:10px;
+  background:url('/calendar/CalendarRow.png');
+  background-repeat:repeat-y;
+}
+
+#numberArea{
+  width:100%;
+}
+
+.day{
+  width:13.8%;
+  height:52px;
+  padding-top:12px;
+  text-align:center;
+  display:inline-block;
+  font-family:Calibri;
+}
+
+.day:hover,.daySelected{
+  background-color: gray;
+}

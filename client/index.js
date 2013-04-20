@@ -152,9 +152,37 @@ var fbookInit = function(func) {
 };
 
 
+/*************
+*** ROUTER ***
+*************/
+
+Meteor.Router.add({
+  '/': 'main_page',
+  '/calendar': 'calendar_page',
+  '/friends': 'friends'
+});
+
+Meteor.Router.filters({
+  'checkLoggedIn': function(page) {
+    if(Meteor.loggingIn()) {
+      return 'loading_page';
+    } else if(Meteor.user()) {
+      return page;
+    } else {
+      return 'signin_page';
+    }
+  }
+});
+
+Meteor.Router.filter('checkLoggedIn', {only: ['calendar_page']});
+
 /****************
 *** TEMPLATES ***
 ****************/
+
+Template.page.currentPage = function() {
+  return 'The current page is: ' + Meteor.Router.page();
+};
 
 Template.dataButtons.events({
   'click button.gCal.getCalendars': function() {
@@ -189,15 +217,8 @@ Template.fbookFriends.select_friends = function() {
 };
 
 Template.fbookFriends.friends = function() {
-  return Session.get('friends'); //|| Meteor.users.find({}, {friends:1}).fetch()[0].friends;
+  return Session.get('friends');// || Meteor.users.findOne({_id: Meteor.userId()}, {friends:1}).friends;
 };
-
-// Template.friend.slider_class = function(isSelected) {
-//   if(isSelected)
-//     return 'slider-button on';
-//   else
-//     return 'slider-button';
-// };
 
 Template.gCalendars.imported_events = function() {
   return Session.get('imported_events');
