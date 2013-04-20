@@ -1,50 +1,5 @@
 <template name="calendar_page">
-  <!-- {{> Tasks}} -->
   {{> calendar_view}}
-</template>
-
-<template name="Tasks">
-  <div id="Calendar" class="Clear">
-    <div id="CalendarTop" class="Clear">
-      <div id="DateStr">{{DateString}}</div>
-      <div id="LastMonth"></div>
-      <div id="NextMonth"></div>
-    </div>
-    <div id="CalendarDays" class="Clear">
-      <div id="NumberArea" class="Clear">
-        {{#each GetDays}}
-          <div class="Day{{Class}}">{{Number}}</div>
-        {{/each}}
-      </div>
-    </div>
-    <div id="CalendarBottom" class="Clear"></div>
-  </div>
-  <div id="Todos" class='Clear'>
-    <div id="TodosTop" class='Clear'>
-      <div id="TodosButton"></div>
-      <div id="TitleDate">{{DayString}}</div>
-      <div id="Preloader"></div>
-    </div>
-    {{#each TasksForDate}}
-      <div class="TodosRow Clear">
-      <div class="Close"></div>
-    {{#if this.Done}}
-      <div class="Checked" onclick="Check('{{this._id}}', true);"></div>
-      <div class="Task Done">
-    {{else}}
-      <div class="Unchecked" onclick="Check('{{this._id}}', false);"></div>
-      <div class="Task">
-    {{/if}}
-    {{#if Editing}}
-      <input id="TodosEdit" value="{{Name}}" autofocus="autofocus"></div>
-    {{else}}
-      <span class="RowText">{{name}}</span></div>
-    {{/if}}
-    </div>
-    {{/each}}
-    <div id="TodosBottom" class='Clear'>
-    </div>
-  </div>
 </template>
 
 <template name="calendar_view">
@@ -53,7 +8,7 @@
       <h1>Event Preferences</h1>
       <form id="calendarPreferences" class="form-horizontal">
         <div class="dayPreferences">
-          <label>Days of Week</label>
+          <h3>Days of Week</h3>
           <label class="checkbox inline">
             <input class="dayBox" type="checkbox" value="Su">Sun</input>
           </label>
@@ -77,7 +32,7 @@
           </label>
         </div>
         <div class="eventPreferences">
-          <label>Types of Events</label>
+          <h3>Types of Events</h3>
           <label class="checkbox inline">
             <input class="eventBox" type="checkbox" value="breakfast">Breakfast</input>
           </label>

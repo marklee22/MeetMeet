@@ -311,3 +311,7 @@ body{
 .day:hover,.daySelected{
   background-color: gray;
 }
+
+.eventDay {
+  background-color: red;
+}

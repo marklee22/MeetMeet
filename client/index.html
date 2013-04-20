@@ -4,18 +4,32 @@
 </head>
 
 <body>
+  {{> header}}
   {{> page}}
   <div class="container-fluid">
   {{renderPage}}
 </div>
 </body>
 
+<template name="header">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <a class="brand" href="#">Friendster</a>
+      <ul class="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a href="/friends">Friends</a></li>
+        {{loginButtons}}
+      </ul>
+    </div>
+  </div>
+</template>
+
 <template name="page">
   {{currentPage}}
 </template>
 
 <template name="main_page">
-  <div class="row-fluid">{{loginButtons}}</div>
   <div class="row-fluid">
     <div class="span4">
       {{> dataButtons}}
@@ -57,16 +71,6 @@
   {{/if}}
 </template>
 
-<template name="fbookFriends">
-  {{#if select_friends}}
-  <div class="friends span8">
-    {{#each friends}}
-      {{> friend}}
-    {{/each}}
-  </div>
-  {{/if}}
-</template>
-
 <template name="calendar">
   <li>{{gCalId}} - {{summary}}</li>
 </template>
@@ -75,13 +79,3 @@
   <li>{{start}} - {{end}} - {{summary}}</li>
 </template>
 
-<template name="friend">
-  <div class="friend span8">
-    <span class="friend-info span4">{{name}}</span>
-    <div class="span4">
-      <div class="slider-frame">
-        <span class="slider-button">OFF</span>
-      </div>
-    </div>
-  </div>
-</template>
