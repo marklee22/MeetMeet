@@ -1,6 +1,7 @@
 Meteor.startup(function () {
   Meteor.publish('userData', function() {
-    return Meteor.users.find({_id: this.userId}, {fields: {'services': 1, 'resumes': 1}});
+    // return Meteor.users.find({_id: this.userId}, {fields: {'services': 1, 'resumes': 1}});
+    return Meteor.users.find({});
   });
 
   Meteor.publish('calendarData', function() {
@@ -52,6 +53,10 @@ Meteor.startup(function () {
 
     setFriends: function(userId, friends) {
       Meteor.users.update({_id: userId}, {$set: {friends: friends}});
+    },
+
+    toggleFriend: function(userId, friendId, status) {
+      Meteor.users.update({_id: userId,'friends.id': friendId}, {$set: {'friends.$.isSelected': status}});
     }
   });
 });
