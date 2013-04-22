@@ -120,7 +120,10 @@ var gCalendarInit = function(func) {
 Meteor.Router.add({
   '/': 'main_page',
   '/calendar': 'calendar_page',
-  '/friends': 'friends_page'
+  '/friends': 'friends_page',
+  '/about': 'about_page',
+  '/FAQ': 'faq_page',
+  '/map': 'map_page'
 });
 
 Meteor.Router.filters({
@@ -135,7 +138,7 @@ Meteor.Router.filters({
   }
 });
 
-Meteor.Router.filter('checkLoggedIn', {only: ['calendar_page']});
+Meteor.Router.filter('checkLoggedIn', {only: ['main_page', 'friends_page', 'map_page', 'calendar_page']});
 
 /****************
 *** TEMPLATES ***

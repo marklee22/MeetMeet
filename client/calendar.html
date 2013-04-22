@@ -9,45 +9,19 @@
       <form id="calendarPreferences" class="form-horizontal">
         <div class="dayPreferences">
           <h3>Days of Week</h3>
+          {{#each daysOfWeek}}
           <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" value="Su">Sun</input>
+            <input class="dayBox" type="checkbox" id="dayBox{{value}}" value="{{value}}">{{day}}</input>
           </label>
-          <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" value="M">Mon</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" value="T">Tues</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" value="W">Wed</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" value="R">Thur</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" value="F">Fri</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" value="S">Sat</input>
-          </label>
+          {{/each}}
         </div>
         <div class="eventPreferences">
           <h3>Types of Events</h3>
+          {{#each eventTypes}}
           <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" value="breakfast">Breakfast</input>
+            <input class="eventBox" type="checkbox" value="{{value}}">{{event}}</input>
           </label>
-          <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" value="lunch">Lunch</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" value="hh">Happy Hour</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" value="dinner">Dinner</input>
-          </label>
-          <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" value="cocktails">Cocktails</input>
-          </label>
+          {{/each}}
         </div>
       </form>
     </div>
