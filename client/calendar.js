@@ -24,20 +24,21 @@ var Months = new Array('January', 'February', 'March', 'April', 'May', 'June', '
 *** MAIN CALENDAR ***
 ********************/
 
+// TODO: Change user preferences to save entire array
 /** Write the user preferences to the database **/
-var updateUserPreferences = function(selector) {
-  var values = [];
-  _.each($(selector), function(box) {
-    if($(box).is(':checked'))
-      values.push($(box).val());
-  });
+var updateUserPreferences = function(elm, param) {
+  // Get the value of the element
+  param += param + $(elm).val();
 
-  if(selector === '.dayBox') {
-    Meteor.call('updateUserCalPreferences', 'days', values);
-  } else if(selector === '.eventBox') {
-    Meteor.call('updateUserCalPreferences', 'events', values);
-  }
-  // console.log(values);
+  // Determine whether the box is being checked or unchecked
+  var value;
+  if($(elm).is(':checked'))
+    value = true;
+  else
+    value = false;
+
+  // Update user preference
+  Meteor.call('updateUserCalPreferences', param, value);
 };
 
 /** Adjust the calendar month **/
@@ -46,6 +47,48 @@ var adjustMonth = function(num){
   if(D.getDate() > 28){ D.setDate(28); }
   D.setMonth(D.getMonth()+num);
   Session.set("Date", D.toDateString());
+};
+
+Template.calendar_view.selected_day = function() {
+  return Session.get('selectedDay');
+};
+
+Template.calendar_view.hours = function() {
+  var hours = [{hour: '12am'}];
+
+  // Create an array of hours in the day
+  _.each(_.range(1,24), function(num) {
+    if(num === 12)
+      num = '12pm';
+    else if(num < 12)
+      num += 'am';
+    else
+      num = num % 12 + 'pm';
+    hours.push({hour: num});
+  });
+
+  // Add the events if they exist for that day
+  _.each(Session.get('gEvents'), function(event) {
+    if(event.start && event.end) {
+      var start = moment(event.start);
+      var end = moment(event.end);
+      var date = moment(Session.get('Date'));
+      if(start.date() == Session.get('selectedDay') && start.month() === date.month()) {
+        console.log('event for this day!');
+        var sHour = start.hour();
+        var eHour = end.hour();
+        var count = 0;
+        while(count < (eHour - sHour)) {
+          hours[sHour].start = start.format('h:mma');
+          hours[sHour].end = end.format('h:mma');
+          hours[sHour].event = event.summary;
+          count++;
+        }
+      }
+    }
+  });
+
+  return hours;
 };
 
 Template.calendar_view.imported_events = function() {
@@ -135,12 +178,16 @@ Template.calendar_view.events({
     adjustMonth(-1);
   },
 
-  'click .dayBox': function() {
-    updateUserPreferences('.dayBox');
+  'click .day': function(e) {
+    Session.set('selectedDay', $(e.target).text());
+  },
+
+  'click .dayBox': function(e) {
+    updateUserPreferences(e.target, 'days');
   },
 
   'click .eventBox': function(e) {
-    updateUserPreferences('.eventBox');
+    updateUserPreferences(e.target, 'events');
   },
 
   'click button.gCal.getCalendars': function() {
@@ -175,7 +222,6 @@ var handleCalendarResponse = function(err, data) {
   // Store these calendars in the database
   Meteor.call('importCalendars', Meteor.userId(), calendarArray, function(err, res){
     if(err) console.log('err - ', err);
-    // console.log('result - ',res);
   });
 
   // Notify the template to show the calendars to select
@@ -187,9 +233,6 @@ var handleCalendarResponse = function(err, data) {
 var getAllCalendars = function(params) {
   var url = 'https://www.googleapis.com/calendar/v3/users/me/calendarList';
   params['maxResults'] = 10;
-
-  // console.log(params);
-
   Meteor.http.get(url, {params: params}, handleCalendarResponse);
 };
 
@@ -213,7 +256,6 @@ var handleEventsResponse = function(err, data) {
 
   // Store events in the database
   Meteor.call('setEvents', events, function(err, result) {
-    // console.log('wrote new events: ', result);
     Session.set('importedEvents', result);
   });
 };

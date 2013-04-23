@@ -77,12 +77,10 @@ Meteor.startup(function () {
       Meteor.users.update({_id: userId,'friends.id': friendId}, {$set: {'friends.$.isSelected': status}});
     },
 
-    updateUserCalPreferences: function(param, values) {
-      console.log(param, values);
-      if(param === 'days')
-        Meteor.users.update({_id: this.userId}, {$set: {days: values}});
-      else if(param === 'events')
-        Meteor.users.update({_id: this.userId}, {$set: {events: values}});
+    // TODO: Change user preferences to save entire array
+    updateUserCalPreferences: function(param, value) {
+      console.log('Updating user with: ' + param + ': ' + value);
+      Meteor.users.update({_id: this.userId}, {$set: {param: value}});
     }
   });
 });

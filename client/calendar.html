@@ -33,7 +33,7 @@
           <h3>Days of Week</h3>
           {{#each daysOfWeek}}
           <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" id="dayBox{{value}}" value="{{value}}">{{day}}</input>
+            <input class="dayBox" type="checkbox" id="day-{{value}}" value="{{value}}">{{day}}</input>
           </label>
           {{/each}}
         </div>
@@ -41,7 +41,7 @@
           <h3>Types of Events</h3>
           {{#each eventTypes}}
           <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" value="{{value}}">{{event}}</input>
+            <input class="eventBox" type="checkbox" id="event-{{value}}" value="{{value}}">{{event}}</input>
           </label>
           {{/each}}
         </div>
@@ -72,5 +72,23 @@
         </div>
       </div>
     </div>
+    {{#if selected_day}}
+    <div class="span8 offset2">
+      <div id="calDay">
+        <h3>Selected Day: {{selected_day}}</h3>
+        <table>
+        {{#each hours}}
+          <tr>
+            <td>{{hour}}</td>
+            {{#if event}}
+              <td>{{start}}-{{end}}: {{event}}</td>
+            {{else}}
+              <td></td>
+            {{/if}}
+          </tr>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
   </div>
 </template>

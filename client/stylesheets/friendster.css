@@ -1,5 +1,9 @@
 /* CSS declarations go here */
 
+body{
+  background:#f4f8f9;
+}
+
 button.gCal {
   display: block;
   margin-top: 10px;
