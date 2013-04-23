@@ -2,15 +2,59 @@ Session.set('Date', new Date());
 
 Meteor.autosubscribe(function () {
   if(Meteor.user()) {
-    Meteor.subscribe('taskData');
     Meteor.subscribe('eventData');
+    Meteor.subscribe('calendarData');
+  }
+});
+
+Deps.autorun(function() {
+  if(Meteor.user()) {
+    var numOfCals = Calendars.find({}).fetch().length;
+    var events = Events.find({}).fetch();
+    if(numOfCals)
+      Session.set('hasCalendars', true);
+    if(events)
+      Session.set('gEvents', events);
   }
 });
 
 var Months = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 
+/********************
+*** MAIN CALENDAR ***
+********************/
 
-/* Friendster calendar */
+/** Write the user preferences to the database **/
+var updateUserPreferences = function(selector) {
+  var values = [];
+  _.each($(selector), function(box) {
+    if($(box).is(':checked'))
+      values.push($(box).val());
+  });
+
+  if(selector === '.dayBox') {
+    Meteor.call('updateUserCalPreferences', 'days', values);
+  } else if(selector === '.eventBox') {
+    Meteor.call('updateUserCalPreferences', 'events', values);
+  }
+  // console.log(values);
+};
+
+/** Adjust the calendar month **/
+var adjustMonth = function(num){
+  var D = new Date(Session.get("Date"));
+  if(D.getDate() > 28){ D.setDate(28); }
+  D.setMonth(D.getMonth()+num);
+  Session.set("Date", D.toDateString());
+};
+
+Template.calendar_view.imported_events = function() {
+  return Session.get('importedEvents');
+};
+
+Template.calendar_view.hasCalendars = function() {
+  return Session.get('hasCalendars');
+};
 
 Template.calendar_view.date_string = function(){
   var D = new Date(Session.get('Date'));
@@ -78,28 +122,8 @@ Template.calendar_view.eventTypes = function() {
   });
 };
 
-/** Write the user preferences to the database **/
-var updateUserPreferences = function(selector) {
-  var values = [];
-  _.each($(selector), function(box) {
-    if($(box).is(':checked'))
-      values.push($(box).val());
-  });
-
-  if(selector === '.dayBox') {
-    Meteor.call('updateUserCalPreferences', 'days', values);
-  } else if(selector === '.eventBox') {
-    Meteor.call('updateUserCalPreferences', 'events', values);
-  }
-  // console.log(values);
-};
-
-/** Adjust the calendar month **/
-var adjustMonth = function(num){
-  var D = new Date(Session.get("Date"));
-  if(D.getDate() > 28){ D.setDate(28); }
-  D.setMonth(D.getMonth()+num);
-  Session.set("Date", D.toDateString());
+Template.calendar_page.select_calendars = function() {
+  return Session.get('select_calendars');
 };
 
 Template.calendar_view.events({
@@ -117,5 +141,143 @@ Template.calendar_view.events({
 
   'click .eventBox': function(e) {
     updateUserPreferences('.eventBox');
+  },
+
+  'click button.gCal.getCalendars': function() {
+    gCalendarInit(getAllCalendars);
+  },
+
+  'click button.gCal.getEvents': function() {
+    gCalendarInit(getEvents);
   }
 });
+
+/**********************
+*** GOOGLE CALENDAR ***
+**********************/
+
+/** Handler for getAllCalendars HTTP request **/
+var handleCalendarResponse = function(err, data) {
+  if(err) console.log('Calendar err: ', err);
+
+  // Process each calendar returned
+  var calendars = data.data.items;
+  var calendarArray = [];
+  _.each(calendars, function(item) {
+    // Change the default calendar name to primary
+    if(item.primary) {
+      item.summary = 'Primary';
+      item.id = 'primary';
+    }
+    calendarArray.push({gCalId: item.id, summary: item.summary});
+  });
+
+  // Store these calendars in the database
+  Meteor.call('importCalendars', Meteor.userId(), calendarArray, function(err, res){
+    if(err) console.log('err - ', err);
+    // console.log('result - ',res);
+  });
+
+  // Notify the template to show the calendars to select
+  Session.set('select_calendars', true);
+  Session.set('gCalendars', calendarArray);
+};
+
+/** Download all calendars from the user **/
+var getAllCalendars = function(params) {
+  var url = 'https://www.googleapis.com/calendar/v3/users/me/calendarList';
+  params['maxResults'] = 10;
+
+  // console.log(params);
+
+  Meteor.http.get(url, {params: params}, handleCalendarResponse);
+};
+
+var handleEventsResponse = function(err, data) {
+  if(err) console.log('Events err:', err);
+
+  var rawEvents = data.data.items;
+  var events = [];
+
+  _.each(rawEvents, function(event) {
+    events.push({
+      start: event.start.dateTime,
+      end: event.end.dateTime,
+      recurrence: event.recurrence,
+      htmlLink: event.htmlLink,
+      status: event.status,
+      gEventId: event.id,
+      summary: event.summary
+    });
+  });
+
+  // Store events in the database
+  Meteor.call('setEvents', events, function(err, result) {
+    // console.log('wrote new events: ', result);
+    Session.set('importedEvents', result);
+  });
+};
+
+var getEvents = function(params) {
+  var url = 'https://www.googleapis.com/calendar/v3/calendars/';
+
+  // Retrieve selected calendars only
+  Meteor.call('getCalendars', true, function(err, results) {
+    if(err) console.log('err - ', err);
+    calendars = results;
+    // console.log(calendars);
+    var minDate = moment().format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+    var maxDate = moment().add('days', 7).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+
+    var params = {
+      access_token: Meteor.user().services.google.accessToken,
+      part: "snippet",
+      mine: "true",
+      timeMin: minDate,
+      timeMax: maxDate
+    };
+
+    Meteor.http.get(url + results[0].gCalId + '/events', {params: params}, handleEventsResponse);
+  });
+};
+
+/** Google Calendar Init to process downloading GCal data **/
+var gCalendarInit = function(func) {
+  // Make sure a User is logged in before calling Google API
+  if(Meteor.user() && !Meteor.loggingIn()) {
+    var params = {
+      access_token: Meteor.user().services.google.accessToken,
+      part: "snippet",
+      mine: "true"
+    };
+    Meteor.loginWithGoogle({
+      requestPermissions: [
+        'https://www.googleapis.com/auth/calendar'
+        ]
+    }, function() {
+      func(params);
+    });
+  }
+};
+
+Template.select_calendars_view.events({
+  'click #importCals': function(e) {
+    e.preventDefault();
+    var importedCals = [],
+        ignoredCals = [];
+
+    // Set all checked calendars to import = true
+    _.each($('input:checkbox:checked'), function(cal) {
+      Meteor.call('setCalendar', $(cal).val(), true);
+    });
+
+    // Set all unchecked calendars to import = false
+    _.each($('input:checkbox:not(:checked)'), function(cal) {
+      Meteor.call('setCalendar', $(cal).val(), false);
+    });
+
+    // Done selecting calendars
+    Session.set('select_calendars', false);
+  }
+});
+

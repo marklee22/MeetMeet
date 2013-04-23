@@ -1,5 +1,27 @@
 <template name="calendar_page">
-  {{> calendar_view}}
+  {{#if select_calendars}}
+    {{> select_calendars_view}}
+  {{else}}
+    {{> calendar_view}}
+  {{/if}}
+</template>
+
+<template name="select_calendars_view">
+  <div class="fluid-row">
+    <div class="span4 offset4">
+      <div class="calendars">
+        <h3>Select Calendars to Import</h3>
+        <ul>
+          {{#each calendars}}
+            <label class="checkbox">
+              <input type="checkbox" value="{{gCalId}}">{{summary}}</input>
+            </label>
+          {{/each}}
+        </ul>
+        <button id="importCals" class="btn btn-primary">Import</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <template name="calendar_view">
@@ -24,6 +46,14 @@
           {{/each}}
         </div>
       </form>
+      <h3>Google Calendar buttons</h3>
+      <button class="gCal getCalendars">Get Google Calendars</button>
+      {{#if hasCalendars}}
+      <button class="gCal getEvents">Sync Events</button>
+      {{/if}}
+      {{#if imported_events}}
+      <p>Successfully imported/updated <strong>{{imported_events}}</strong> events!</p>
+      {{/if}}
     </div>
   </div>
   <div class="fluid-row">

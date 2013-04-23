@@ -38,7 +38,6 @@
       {{> dataButtons}}
     </div>
     <div class="span8">
-      {{> gCalendars}}
       {{> fbookFriends}}
     </div>
   </div>
@@ -51,34 +50,3 @@
   <h3>Facebook buttons</h3>
   <button class="fbook getFriends">Get Facebook Friends</button>
 </template>
-
-<template name="gCalendars">
-  {{#if select_calendars}}
-  <div class="calendars">
-    <h3>Calendars</h3>
-    <ul>
-      {{#each calendars}}
-        {{> calendar}}
-      {{/each}}
-    </ul>
-  {{/if}}
-  {{#if imported_events}}
-  <div class="events">
-    <h3>Events</h3>
-    <ul>
-      {{#each events}}
-        {{> event}}
-      {{/each}}
-    </ul>
-  </div>
-  {{/if}}
-</template>
-
-<template name="calendar">
-  <li>{{gCalId}} - {{summary}}</li>
-</template>
-
-<template name="event">
-  <li>{{start}} - {{end}} - {{summary}}</li>
-</template>
-
