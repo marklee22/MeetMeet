@@ -123,7 +123,9 @@ Meteor.Router.add({
   '/friends': 'friends_page',
   '/about': 'about_page',
   '/FAQ': 'faq_page',
-  '/map': 'map_page'
+  '/map': 'map_page',
+  '/signup': 'signup_page',
+  '/forgot_password': 'forgot_password_page'
 });
 
 Meteor.Router.filters({

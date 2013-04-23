@@ -22,11 +22,79 @@
         </div>
         <div class="control-group">
           <div class="controls">
-            <a href="#">Forgot Password</a>
-            <a href="#">Sign Up</a>
+            <a href="/forgot_password">Forgot Password</a>
+            <a href="/signup">Sign Up</a>
           </div>
         </div>
+      </form>
     </div>
+  </div>
+</template>
+
+<template name="signup_page">
+  <div class="row-fluid">
+    <div class="span4 offset4">
+      <h2>Sign Up</h2>
+      <form id="signinForm" class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label" for="inputEmail">Email</label>
+          <div class="controls">
+            <input type="text" id="inputEmail" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputName">Name</label>
+          <div class="controls">
+            <input type="input" id="inputName" placeholder="Full Name">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputLocation">Primary Location</label>
+          <div class="controls">
+            <input type="text" id="inputLocation" placeholder="Location">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputPassword">Password</label>
+          <div class="controls">
+            <input type="password" id="inputPassword" placeholder="Password" required>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputPasswordConfirmation">Confirmation</label>
+          <div class="controls">
+            <input type="password" id="inputPasswordConfirmation" placeholder="Confirmation" required>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <input id="signinSubmit" type="submit" value="Register"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<template name="forgot_password_page">
+  <div class="row-fluid">
+    <div class="span4 offset4">
+      <h2>Forgot Password</h2>
+      <form id="forgotPasswordForm" class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label" for="inputEmail">Email</label>
+          <div class="controls">
+            <input type="text" id="inputEmail" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <input id="forgotPassSubmit" type="submit" value="Send Email"/>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <template name="loading_page">
