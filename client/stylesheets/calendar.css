@@ -295,8 +295,8 @@
   width:100%;
 }
 
-.day{
-  width:13.8%;
+.day, .dayTitle, .dayDash {
+  width:13.5%;
   height:52px;
   padding-top:12px;
   text-align:center;
@@ -304,7 +304,15 @@
   font-family:Calibri;
 }
 
-.day:hover,.daySelected{
+.day, .dayDash {
+  border: 1px solid black;
+}
+
+.dayTitle {
+  font-weight: bold;
+}
+
+.day:hover,.daySelected {
   background-color: gray;
 }
 

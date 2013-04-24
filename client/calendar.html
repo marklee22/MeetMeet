@@ -5,12 +5,21 @@
     {{#if showUserPrefs}}
       {{> calendar_prefs}}
     {{/if}}
-    {{#if showDayView}}
-      {{> day_calendar}}
-    {{else}}
-      {{> month_calendar}}
-    {{/if}}
+    {{> full_calendar}}
   {{/if}}
+</template>
+
+<template name="full_calendar">
+  <div class="fluid-row">
+    <div class="span10 offset1">
+      {{#if hideCalPrefs}}
+        <button class="btn" id="showCalPrefs">Show Preferences</button>
+      {{/if}}
+      {{#constant}}
+      <div id="fullCalendar"></div>
+      {{/constant}}
+    </div>
+  </div>
 </template>
 
 <template name="select_calendars">
@@ -21,11 +30,11 @@
         <ul>
           {{#each calendars}}
             <label class="checkbox">
-              <input type="checkbox" value="{{gCalId}}">{{summary}}</input>
+              <input type="checkbox" value="{{gCalId}}" {{#if isSelected}}checked{{/if}}>{{summary}}</input>
             </label>
           {{/each}}
         </ul>
-        <button id="importCals" class="btn btn-primary">Import</button>
+        <button id="importCals" class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
@@ -63,50 +72,5 @@
       {{/if}}
     </div>
     <button class="btn" id="hideCalPrefs">Hide Preferences</button>
-  </div>
-</template>
-
-<template name="month_calendar">
-  <div class="fluid-row">
-    {{#if hideCalPrefs}}
-    <button class="btn" id="showCalPrefs">Show Preferences</button>
-    {{/if}}
-    <div class="span10 offset1">
-      <h1>Calendar</h1>
-      <div id="cal" class="Clear">
-        <div id="calTop">
-          <button id="lastMonth">Left</button>
-          <div id="dateStr">{{dateString}}</div>
-          <button id="nextMonth">Right</button>
-        </div>
-        <div id="numberArea">
-          {{#each getDays}}
-          <div class="day{{class}}">{{number}}</div>
-          {{/each}}
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<template name="day_calendar">
-  <div class="fluid-row">
-    <button class="btn left" id="showMonthView">Month View</button>
-    <div class="span10 offset1">
-      <div id="calDay">
-        <h3>Selected Day: {{selectedDay}}</h3>
-        <table>
-        {{#each hours}}
-          <tr>
-            <td>{{hour}}</td>
-            {{#if event}}
-              <td>{{start}}-{{end}}: {{event}}</td>
-            {{else}}
-              <td></td>
-            {{/if}}
-          </tr>
-        {{/each}}
-      </div>
-    </div>
   </div>
 </template>
