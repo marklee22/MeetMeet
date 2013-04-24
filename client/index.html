@@ -1,11 +1,17 @@
 <head>
   <title>friendster</title>
+      <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        html { height: 100% }
+        body { height: 100%; margin: 0; padding: 0 }
+        #map-canvas { height: 400px; }
+    </style>
   <script src="https://apis.google.com/js/client.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyACRc-SGQocyxZCNH1w5MIf_URgor_Tf4A&sensor=true"></script>
 </head>
 
 <body>
   {{> header}}
-  {{> page}}
   <div class="container-fluid">
     <div class="main-content">
       {{renderPage}}
@@ -29,8 +35,7 @@
         <li><a href="/">Home</a></li>
         <li><a href="/calendar">Calendar</a></li>
         <li><a href="/friends">Friends</a></li>
-        <li><a href="/map">Map</a></li>
-        <li><a href="/FAQ">FAQ</a></li>
+        <li><a href="/FAQ">How it Works</a></li>
       </ul>
     </div>
     <div class="span3 right">
@@ -63,8 +68,14 @@
 
 <template name="main_page">
   <div class="row-fluid">
-    <div class="events">
-      <h1>Events</h1>
+    <div class="span10 offset1">
+      <div class="events">
+        {{#constant}}
+        <div id="map-canvas"></div>
+        {{/constant}}
+        <h4>Events</h4>
+        <span>TODO: Show event requests here</span>
+      </div>
     </div>
   </div>
 </template>
