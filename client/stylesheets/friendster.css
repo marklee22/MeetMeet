@@ -4,8 +4,29 @@ body{
   background:#f4f8f9;
 }
 
+/* Universal styles */
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.divider {
+  height: 1px;
+  margin: 9px 1px;
+  overflow: hidden;
+  background-color: #e5e5e5;
+  border-bottom: 1px solid #ffffff;
+}
+
 .highlight {
   background-color: gray;
+}
+
+div.main-content {
+  min-height: 400px;
 }
 
 button.gCal {
@@ -79,4 +100,28 @@ div.friendSlider li {
 .slider-button.on {
   margin-left: 40px;
   background: rgb(128, 123, 250);
+}
+
+/* Header */
+.header li {
+  padding-right: 20px;
+  font-size: 20px;
+}
+
+/* Footer */
+div.footer {
+  margin-bottom: 40px;
+}
+
+div.footer-right ul, div.footer-right li {
+  list-style: none;
+  display: inline;
+}
+
+div.footer ul {
+  margin: 0;
+}
+
+div.footer li a {
+  margin-left: 20px;
 }

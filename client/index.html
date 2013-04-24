@@ -7,22 +7,51 @@
   {{> header}}
   {{> page}}
   <div class="container-fluid">
-  {{renderPage}}
-</div>
+    <div class="main-content">
+      {{renderPage}}
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      {{> footer}}
+    </div>
+  </div>
 </body>
 
 <template name="header">
-  <div class="navbar">
+  <div class="navbar header">
     <div class="navbar-inner">
-      <a class="brand" href="#">Friendster</a>
+      <div class="span2 offset1">
+        <a class="brand" href="#">Friendster</a>
+      </div>
+      <div class="span6">
       <ul class="nav">
         <li><a href="/">Home</a></li>
         <li><a href="/calendar">Calendar</a></li>
         <li><a href="/friends">Friends</a></li>
         <li><a href="/map">Map</a></li>
         <li><a href="/FAQ">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="span3 right">
+      {{loginButtons}}
+    </div>
+  </div>
+</div>
+</template>
+
+<template name="footer">
+  <div class="footer span10 offset1">
+    <ul>
+      <li class="divider"></li>
+    </ul>
+    <div class="footer-left left">
+      <span>By <a href="http://markleeis.me">Mark Lee</a> of <a href="http://www.hackreactor.com">Hack Reactor</a></span>
+    </div>
+    <div class="footer-right right">
+      <ul>
         <li><a href="/about">About</a></li>
-        {{loginButtons}}
+        <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
   </div>
@@ -34,19 +63,8 @@
 
 <template name="main_page">
   <div class="row-fluid">
-    <div class="span4">
-      {{> dataButtons}}
-    </div>
-    <div class="span8">
-      {{> fbookFriends}}
+    <div class="events">
+      <h1>Events</h1>
     </div>
   </div>
-</template>
-
-<template name="dataButtons">
-  <h3>Google Calendar buttons</h3>
-  <button class="gCal getCalendars">Get Google Calendars</button>
-  <button class="gCal getEvents">Get Google Calendar Events</button>
-  <h3>Facebook buttons</h3>
-  <button class="fbook getFriends">Get Facebook Friends</button>
 </template>

@@ -13,7 +13,8 @@ Meteor.Router.add({
   '/FAQ': 'faq_page',
   '/map': 'map_page',
   '/signup': 'signup_page',
-  '/forgot_password': 'forgot_password_page'
+  '/forgot_password': 'forgot_password_page',
+  '/contact': 'contact_page'
 });
 
 Meteor.Router.filters({
