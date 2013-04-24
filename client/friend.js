@@ -1,3 +1,22 @@
+Meteor.subscribe('friendData');
+
+Deps.autorun(function() {
+  if(Meteor.user() && Friends.findOne({})) {
+    var friends = Friends.findOne({}).friendsList;
+    if(friends) {
+      friends = _.sortBy(friends, function(friend) {
+        return friend.name;
+      });
+      if(Session.get('friendListLetter')) {
+        Session.set('friends', _.filter(friends, function(friend) {
+          return friend.name.charAt(0).toUpperCase() === Session.get('friendListLetter');
+        }));
+      } else
+        Session.set('friends', friends);
+    }
+  }
+});
+
 /*************************
 *** Facebook Functions ***
 *************************/
@@ -6,7 +25,8 @@ var handleFbookFriendsResponse = function(err, data) {
   if(err) console.log('fbook friend err: ', err);
 
   var friends = data.data.data;
-  Meteor.call('setFriends', Meteor.userId(), friends, function(err, result) {
+  console.log(friends);
+  Meteor.call('insertFriends', friends, function(err, result) {
     if(err) console.log('setFriends err: ', err);
   });
 
@@ -39,27 +59,40 @@ var fbookInit = function(func) {
 Template.friends_page.events({
   'click button.fbook.getFriends': function() {
     fbookInit(getFbookFriends);
+  },
+
+  'click .friendSlider li': function(e) {
+    $('li.letter').removeClass('highlight');
+    $(e.target).addClass('highlight');
+    Session.set('friendListLetter', $(e.target).text());
+  }
+});
+
+Template.friend.preserve({
+  '.slider-button[id]': function(node) {
+    return node.id;
   }
 });
 
 Template.friend.events({
  'click .slider-button': function(e) {
     var status;
-    if($(e.target).hasClass('on')) {
-      $(e.target).removeClass('on').html('OFF');
-      status = false;
-    } else {
-      $(e.target).addClass('on').html('ON');
+    $(e.target).toggleClass('on');
+    if($(e.target).hasClass('on'))
       status = true;
-    }
-    Meteor.call('toggleFriend', Meteor.userId(), this.id, status);
+    else
+      status = false;
+    Meteor.call('toggleFriend', this.id, status);
   }
 });
 
-Template.fbookFriends.select_friends = function() {
-  return Session.get('select_friends') || true;
+Template.fbookFriends.friends = function() {
+  return Session.get('friends');
 };
 
-Template.fbookFriends.friends = function() {
-  return Session.get('friends');// || Meteor.users.findOne({_id: Meteor.userId()}, {friends:1}).friends;
+Template.friends_page.letters = function() {
+  var letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+  return _.map(letters, function(let) {
+    return {letter: let};
+  });
 };

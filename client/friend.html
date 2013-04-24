@@ -1,31 +1,38 @@
 <template name="friends_page">
   <div class="row-fluid">
-    <div class="span4">
+    <div class="span2 offset2">
       <h3>Facebook buttons</h3>
       <button class="fbook getFriends">Get Facebook Friends</button>
     </div>
-    <div class="span8">
+    <div class="span6">
+      <div class="friendSlider">
+        <ul>
+          {{#each letters}}
+            <li class="letter">{{letter}}</li>
+          {{/each}}
+        </ul>
+      </div>
       {{> fbookFriends}}
     </div>
   </div>
 </template>
 
 <template name="fbookFriends">
-  {{#if select_friends}}
   <div class="friends span8">
+    <div></div>
     {{#each friends}}
       {{> friend}}
     {{/each}}
   </div>
-  {{/if}}
 </template>
 
 <template name="friend">
   <div class="friend span12">
+    <img src="https://graph.facebook.com/{{id}}/picture"/>
     <span class="friend-info span6">{{name}}</span>
     <div>
       <div class="slider-frame">
-        <span class="slider-button">OFF</span>
+        <span class="slider-button{{#if isSelected}} on{{/if}}" id="friend{{id}}"></span>
       </div>
     </div>
   </div>

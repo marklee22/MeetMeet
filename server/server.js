@@ -12,6 +12,10 @@ Meteor.startup(function () {
     return Events.find({userId: this.userId});
   });
 
+  Meteor.publish('friendData', function() {
+    return Friends.find({userId: this.userId});
+  });
+
   Meteor.methods({
     clearCalendars: function() {
       Calendars.remove({});
@@ -69,12 +73,24 @@ Meteor.startup(function () {
       return count;
     },
 
-    setFriends: function(userId, friends) {
-      Meteor.users.update({_id: userId}, {$set: {friends: friends}});
+    insertFriends: function(friends) {
+      console.log('Inserting new friend list for user: ' + this.userId);
+      var obj = {
+        userId: this.userId,
+        fbookId: Meteor.user().services.facebook.id,
+        fbookName: Meteor.user().services.facebook.name,
+        friendsList: friends
+      };
+      Friends.insert(obj);
     },
 
-    toggleFriend: function(userId, friendId, status) {
-      Meteor.users.update({_id: userId,'friends.id': friendId}, {$set: {'friends.$.isSelected': status}});
+    // setFriends: function(userId, friends) {
+    //   Meteor.users.update({_id: userId}, {$set: {friends: friends}});
+    // },
+
+    toggleFriend: function(friendId, status) {
+      console.log('Changing user: ' + this.userId + ' friend: ' + friendId + ' to: ' + status);
+      Friends.update({userId: this.userId, 'friendsList.id': friendId}, {$set: {'friendsList.$.isSelected': status}});
     },
 
     // TODO: Change user preferences to save entire array
