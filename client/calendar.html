@@ -1,12 +1,19 @@
 <template name="calendar_page">
-  {{#if select_calendars}}
-    {{> select_calendars_view}}
+  {{#if selectCalendars}}
+    {{> select_calendars}}
   {{else}}
-    {{> calendar_view}}
+    {{#if showUserPrefs}}
+      {{> calendar_prefs}}
+    {{/if}}
+    {{#if showDayView}}
+      {{> day_calendar}}
+    {{else}}
+      {{> month_calendar}}
+    {{/if}}
   {{/if}}
 </template>
 
-<template name="select_calendars_view">
+<template name="select_calendars">
   <div class="fluid-row">
     <div class="span4 offset4">
       <div class="calendars">
@@ -24,11 +31,11 @@
   </div>
 </template>
 
-<template name="calendar_view">
+<template name="calendar_prefs">
   <div class="fluid-row">
-    <div class="span8 offset2">
-      <h1>Event Preferences</h1>
+    <div class="span10 offset1">
       <form id="calendarPreferences" class="form-horizontal">
+        <h4>Event Preferences</h4>
         <div class="dayPreferences">
           <h3>Days of Week</h3>
           {{#each daysOfWeek}}
@@ -46,36 +53,48 @@
           {{/each}}
         </div>
       </form>
-      <h3>Google Calendar buttons</h3>
+      <h4>Google Calendar buttons</h4>
       <button class="gCal getCalendars">Get Google Calendars</button>
       {{#if hasCalendars}}
       <button class="gCal getEvents">Sync Events</button>
       {{/if}}
       {{#if imported_events}}
-      <p>Successfully imported/updated <strong>{{imported_events}}</strong> events!</p>
+      <p>Successfully imported/updated <strong>{{importedEvents}}</strong> events!</p>
       {{/if}}
     </div>
+    <button class="btn" id="hideCalPrefs">Hide Preferences</button>
   </div>
+</template>
+
+<template name="month_calendar">
   <div class="fluid-row">
-    <div class="span8 offset2">
+    {{#if hideCalPrefs}}
+    <button class="btn" id="showCalPrefs">Show Preferences</button>
+    {{/if}}
+    <div class="span10 offset1">
       <h1>Calendar</h1>
       <div id="cal" class="Clear">
         <div id="calTop">
           <button id="lastMonth">Left</button>
-          <div id="dateStr">{{date_string}}</div>
+          <div id="dateStr">{{dateString}}</div>
           <button id="nextMonth">Right</button>
         </div>
         <div id="numberArea">
-          {{#each get_days}}
+          {{#each getDays}}
           <div class="day{{class}}">{{number}}</div>
           {{/each}}
         </div>
       </div>
     </div>
-    {{#if selected_day}}
-    <div class="span8 offset2">
+  </div>
+</template>
+
+<template name="day_calendar">
+  <div class="fluid-row">
+    <button class="btn left" id="showMonthView">Month View</button>
+    <div class="span10 offset1">
       <div id="calDay">
-        <h3>Selected Day: {{selected_day}}</h3>
+        <h3>Selected Day: {{selectedDay}}</h3>
         <table>
         {{#each hours}}
           <tr>
@@ -89,6 +108,5 @@
         {{/each}}
       </div>
     </div>
-    {{/if}}
   </div>
 </template>
