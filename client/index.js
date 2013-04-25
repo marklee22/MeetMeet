@@ -42,9 +42,10 @@ Template.page.currentPage = function() {
 *** GMAP ***
 ***********/
 var map;
-function initialize() {
+
+var mapInitialize = function() {
   var mapOptions = {
-    zoom: 6,
+    zoom: 15,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -56,10 +57,11 @@ function initialize() {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
 
-      var infowindow = new google.maps.InfoWindow({
+      var marker = new google.maps.Marker({
         map: map,
         position: pos,
-        content: 'Location found using HTML5.'
+        animation: google.maps.Animation.DROP,
+        title: 'You are here'
       });
 
       map.setCenter(pos);
@@ -70,7 +72,7 @@ function initialize() {
     // Browser doesn't support Geolocation
     handleNoGeolocation(false);
   }
-};
+}
 
 function handleNoGeolocation(errorFlag) {
   if (errorFlag) {
@@ -87,11 +89,11 @@ function handleNoGeolocation(errorFlag) {
 
   var infowindow = new google.maps.InfoWindow(options);
   map.setCenter(options.position);
-};
+}
 
 
 Template.main_page.rendered = function() {
   console.log('rendered maps');
-  google.maps.event.addDomListener(window, 'load', initialize);
+  google.maps.event.addDomListener(window, 'load', mapInitialize);
   google.maps.event.trigger(window, 'load');
 };
