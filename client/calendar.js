@@ -53,6 +53,7 @@ Template.full_calendar.rendered = function() {
       right: 'agendaDay, agendaWeek, month'
     },
     weekMode: 'variable',
+    eventBackgroundColor: 'salmon',
     agendaDay: {
       minTime: 6,
       maxTime: 8
@@ -200,6 +201,51 @@ var gCalendarInit = function(func) {
 *** CALENDAR PREFS ***
 *********************/
 
+/** Mark all of those days of the month as unavailable/available **/
+var toggleDaysOfWeek = function(day) {
+  var days = {
+    Su: 1,
+    M: 2,
+    T: 3,
+    W: 4,
+    R: 5,
+    F: 6,
+    Sa: 7
+  };
+  console.log(days[day]);
+
+  var $days = $('#fullCalendar table.fc-border-separate tr').find('td:nth-child(' + days[day] + ')');
+  _.each($days, function(day, index) {
+    // var date = $(day).data('date');
+    // var event = {};
+    // event.start = event.end = moment(date).format('X');
+    // event.summary = 'NO MEETUPS';
+    // event._id = index;
+    // event.allDay = true;
+    // // console.log(event);
+    // console.log($(this));
+    // $('#fullCalendar').fullCalendar('addEventSource', [event]);
+    $(day).toggleClass('busy');
+  });
+};
+
+// TODO: Change user preferences to save entire array
+/** Write the user preferences to the database **/
+var updateUserPreferences = function(elm, param) {
+  // Get the value of the element
+  param += param + $(elm).val();
+
+  // Determine whether the box is being checked or unchecked
+  var value;
+  if($(elm).is(':checked'))
+    value = true;
+  else
+    value = false;
+
+  // Update user preference
+  Meteor.call('updateUserCalPreferences', param, value);
+};
+
 Template.calendar_prefs.daysOfWeek = function() {
   var days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
   var values = ['Su', 'M', 'T', 'W', 'R', 'F', 'Sa'];
@@ -226,6 +272,7 @@ Template.calendar_prefs.hasCalendars = function() {
 
 Template.calendar_prefs.events({
   'click .dayBox': function(e) {
+    toggleDaysOfWeek($(e.target).val());
     updateUserPreferences(e.target, 'days');
   },
 

@@ -331,3 +331,7 @@
   height: 15px;
   width: 15px;
 }
+
+.busy {
+  background-color: rgb(250,128,114);
+}
