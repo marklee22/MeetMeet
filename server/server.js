@@ -73,6 +73,11 @@ Meteor.startup(function () {
       return count;
     },
 
+    deleteEvent: function(eventId) {
+      console.log('Deleting event: ' + eventId);
+      Events.remove({_id: eventId});
+    },
+
     insertFriends: function(friends) {
       console.log('Inserting new friend list for user: ' + this.userId);
       var obj = {

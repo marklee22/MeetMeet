@@ -323,3 +323,11 @@
 .hide {
   display: none;
 }
+
+.close {
+  background-image: url('/msg-close-sprite.gif');
+  background-repeat: no-repeat;
+  background-position: 0px -30px;
+  height: 15px;
+  width: 15px;
+}

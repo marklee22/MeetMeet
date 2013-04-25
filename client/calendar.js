@@ -9,7 +9,6 @@ Meteor.autosubscribe(function () {
 
 Deps.autorun(function() {
   if(Meteor.user()) {
-    console.log('in autorun');
     var calendars = Calendars.find({}).fetch();
     var events = Events.find({}).fetch();
     if(calendars) {
@@ -22,7 +21,6 @@ Deps.autorun(function() {
         // console.log(event);
         var foundEvent = $('#fullCalendar').fullCalendar('clientEvents', event._id);
         if(foundEvent.length > 0) {
-          console.log('updating event');
           foundEvent.title = event.summary;
           foundEvent.start = event.start;
           foundEvent.end = event.end;
@@ -30,7 +28,6 @@ Deps.autorun(function() {
           foundEvent.allDay = event.allDay;
           $('#fullCalendar').fullCalendar('updateEvent', foundEvent);
         } else {
-          console.log('inserting event');
           $('#fullCalendar').fullCalendar('addEventSource', [event]);
         }
       });
@@ -38,33 +35,59 @@ Deps.autorun(function() {
   }
 });
 
+/**************************
+*** FULL CALENDAR FUNCS ***
+**************************/
+
 Template.full_calendar.hideCalPrefs = function() {
   return !Session.get('showCalPrefs');
 };
 
 Template.full_calendar.rendered = function() {
-  $('#fullCalendar').empty();
-  $('#fullCalendar').fullCalendar({
+  $cal = $('#fullCalendar');
+  $cal.empty();
+  $cal.fullCalendar({
     header: {
       left: 'prev, next',
       center: 'title',
       right: 'agendaDay, agendaWeek, month'
     },
     weekMode: 'variable',
+    agendaDay: {
+      minTime: 6,
+      maxTime: 8
+    },
     eventDataTransform: function(event) {
       var newEvent = {};
       newEvent.id = event._id;
       newEvent.title = event.summary;
       newEvent.start = event.start;
       newEvent.end = event.end;
-      newEvent.url = event.htmlLink;
+      // newEvent.url = event.htmlLink;
       newEvent.allDay = event.allDay;
       return newEvent;
+    },
+    eventRender: function(event, element, view) {
+      var node = $('<div class="close"></div>').on('click', function() {
+        Meteor.call('deleteEvent', event.id);
+        $cal.fullCalendar('removeEventSource', event.source);
+      });
+      $(element).append(node);
+    },
+    dayClick: function(date, allDay, jsEvent, view) {
+      $cal.fullCalendar('changeView', 'agendaDay');
+      console.log(date);
+      date = moment(date);
+      $cal.fullCalendar('gotoDate', date.year(), date.month(), date.date());
+    },
+    eventClick: function(event, jsEvent, view) {
+      return false;
     }
   });
-  console.log('# of events - ', Session.get('gEvents').length);
-  if(Session.get('gEvents').length !== $('#fullCalendar').fullCalendar('clientEvents').length)
-    $('#fullCalendar').fullCalendar('addEventSource', Session.get('gEvents'));
+
+  // Render the events onto the calendar if they are not in sync
+  if(Session.get('gEvents').length !== $cal.fullCalendar('clientEvents').length)
+    $cal.fullCalendar('addEventSource', Session.get('gEvents'));
 };
 
 /****************************
@@ -133,23 +156,24 @@ var getEvents = function(params) {
   var url = 'https://www.googleapis.com/calendar/v3/calendars/';
 
   // Retrieve selected calendars only
-  Meteor.call('getCalendars', true, function(err, results) {
+  Meteor.call('getCalendars', true, function(err, calendars) {
     if(err) console.log('err - ', err);
-    calendars = results;
-    // console.log(calendars);
-    var minDate = moment().add('days', -10).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
-    var maxDate = moment().add('days', 7).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+    _.each(calendars, function(calendar) {
+      // console.log(calendars);
+      var minDate = moment().add('days', -10).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+      var maxDate = moment().add('days', 7).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
 
-    var params = {
-      access_token: Meteor.user().services.google.accessToken,
-      part: "snippet",
-      mine: "true",
-      timeMin: minDate,
-      timeMax: maxDate,
-      singleEvents: true
-    };
+      var params = {
+        access_token: Meteor.user().services.google.accessToken,
+        part: "snippet",
+        mine: "true",
+        timeMin: minDate,
+        timeMax: maxDate,
+        singleEvents: true
+      };
 
-    Meteor.http.get(url + results[0].gCalId + '/events', {params: params}, handleEventsResponse);
+      Meteor.http.get(url + calendar.gCalId + '/events', {params: params}, handleEventsResponse);
+    });
   });
 };
 
@@ -171,6 +195,56 @@ var gCalendarInit = function(func) {
     });
   }
 };
+
+/*********************
+*** CALENDAR PREFS ***
+*********************/
+
+Template.calendar_prefs.daysOfWeek = function() {
+  var days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
+  var values = ['Su', 'M', 'T', 'W', 'R', 'F', 'Sa'];
+  return _.map(days, function(day, i) {
+    return {day: days[i], value: values[i]};
+  });
+};
+
+Template.calendar_prefs.eventTypes = function() {
+  var events = ['Breakfast', 'Lunch', 'Happy Hour', 'Dinner', 'Cocktails'];
+  var values = ['bfast', 'lun', 'hh', 'din', 'ctails'];
+  return _.map(events, function(event, i) {
+    return {event: events[i], value: values[i]};
+  });
+};
+
+Template.calendar_prefs.importedEvents = function() {
+  return Session.get('importedEvents');
+};
+
+Template.calendar_prefs.hasCalendars = function() {
+  return Session.get('hasCalendars');
+};
+
+Template.calendar_prefs.events({
+  'click .dayBox': function(e) {
+    updateUserPreferences(e.target, 'days');
+  },
+
+  'click .eventBox': function(e) {
+    updateUserPreferences(e.target, 'events');
+  },
+
+  'click button.gCal.getCalendars': function() {
+    gCalendarInit(getAllCalendars);
+  },
+
+  'click button.gCal.getEvents': function() {
+    gCalendarInit(getEvents);
+  },
+
+  'click #hideCalPrefs': function() {
+    Session.set('showCalPrefs', false);
+  }
+});
 
 /*************************
 *** CALENDAR PAGE VIEW ***
@@ -220,55 +294,5 @@ Template.select_calendars.events({
 
     // Done selecting calendars
     Session.set('selectCalendars', false);
-  }
-});
-
-/*********************
-*** CALENDAR PREFS ***
-*********************/
-
-Template.calendar_prefs.daysOfWeek = function() {
-  var days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-  var values = ['Su', 'M', 'T', 'W', 'R', 'F', 'Sa'];
-  return _.map(days, function(day, i) {
-    return {day: days[i], value: values[i]};
-  });
-};
-
-Template.calendar_prefs.eventTypes = function() {
-  var events = ['Breakfast', 'Lunch', 'Happy Hour', 'Dinner', 'Cocktails'];
-  var values = ['bfast', 'lun', 'hh', 'din', 'ctails'];
-  return _.map(events, function(event, i) {
-    return {event: events[i], value: values[i]};
-  });
-};
-
-Template.calendar_prefs.importedEvents = function() {
-  return Session.get('importedEvents');
-};
-
-Template.calendar_prefs.hasCalendars = function() {
-  return Session.get('hasCalendars');
-};
-
-Template.calendar_prefs.events({
-  'click .dayBox': function(e) {
-    updateUserPreferences(e.target, 'days');
-  },
-
-  'click .eventBox': function(e) {
-    updateUserPreferences(e.target, 'events');
-  },
-
-  'click button.gCal.getCalendars': function() {
-    gCalendarInit(getAllCalendars);
-  },
-
-  'click button.gCal.getEvents': function() {
-    gCalendarInit(getEvents);
-  },
-
-  'click #hideCalPrefs': function() {
-    Session.set('showCalPrefs', false);
   }
 });
