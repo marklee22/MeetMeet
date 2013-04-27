@@ -1,5 +1,15 @@
 Meteor.subscribe('userData');
 Meteor.subscribe('calendarData');
+Meteor.subscribe('meetingData');
+
+Deps.autorun(function() {
+  if(Meteor.user()) {
+    var meetings = Meetings.find({});
+    if(meetings) {
+      Session.set('meetings', meetings.fetch());
+    }
+  }
+});
 
 /*************
 *** ROUTER ***
@@ -73,6 +83,13 @@ var mapInitialize = function() {
         placeMarker(event.latLng);
       });
 
+      Meteor.call('getNearbyUsers', 25, function(err, results) {
+      _.each(results, function(item) {
+        var position = new google.maps.LatLng(item.loc[1], item.loc[0]);
+        setTimeout(placeMarker(position), 500);
+      });
+    });
+
     }, function() {
       handleNoGeolocation(true);
     });
@@ -83,7 +100,6 @@ var mapInitialize = function() {
 };
 
 var placeMarker = function(location) {
-  console.log(location.lng(), location.lat());
   Meteor.call('setLocation', location.lng(), location.lat());
   var marker = new google.maps.Marker({
     position: location,
@@ -109,24 +125,43 @@ function handleNoGeolocation(errorFlag) {
   map.setCenter(options.position);
 }
 
+/****************
+*** MAIN PAGE ***
+****************/
 
 Template.main_page.rendered = function() {
-  console.log('rendered maps');
   google.maps.event.addDomListener(window, 'load', mapInitialize);
   google.maps.event.trigger(window, 'load');
+};
+
+Template.meetings.meetings = function() {
+  return Session.get('meetings');
+};
+
+Template.meetings.format_time = function(start, end) {
+  start = moment.unix(start);
+  end = moment.unix(end);
+
+  return start.format('MMM D - ') + start.format('h:mm A') + ' - ' + end.format('h:mm A');
+};
+
+Template.meetings.lookup_user_name = function(users) {
+  var friend = _.filter(users, function(user) {
+    return user.id !== Meteor.userId();
+  });
+  return friend[0].name;
+};
+
+Template.meetings.lookup_user_id = function(users) {
+  var friend = _.filter(users, function(user) {
+    return user.id !== Meteor.userId();
+  });
+  return friend[0].fbookId;
 };
 
 Template.main_page.events({
   'click #showUsers': function() {
     console.log('showUsers clicked');
-    Meteor.call('getNearbyUsers', 25, function(err, results) {
-      console.log(results);
-      _.each(results, function(item) {
-        console.log(item.loc);
-        var position = new google.maps.LatLng(item.loc[1], item.loc[0]);
-        setTimeout(placeMarker(position), 500);
-      });
-    });
   },
 
   'click #getMutualTime': function() {
@@ -134,5 +169,9 @@ Template.main_page.events({
     Meteor.call('getMutualTimes', 'Jxdmr2T4thi2GpJZw', 'tAMYpwWKYbHjXbiEa', function(err, results) {
       console.log(results);
     });
+  },
+
+  'click #testButton': function() {
+    Meteor.call('testMeeting');
   }
 });

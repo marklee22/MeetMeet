@@ -16,9 +16,22 @@ Meteor.startup(function () {
     return Friends.find({userId: this.userId});
   });
 
+  // Return all meetings a user is involved with
+  Meteor.publish('meetingData', function() {
+    return Meetings.find({'users.id': this.userId});
+  });
+
   /*********************
   *** SERVER METHODS ***
   *********************/
+
+  var eventTimeFilters = {
+    'bfast': [7,7.5,8,8.5,9],
+    'lun': [11.5,12,12.5,13,13.5],
+    'hh': [17,17.5,18,18.5,19,19.5],
+    'din': [18,18.5,19,19.5,20,20.5,21],
+    'ctails': [20,20.5,21,21.5,22,22.5]
+  };
 
   /**
     - Get user schedule
@@ -36,11 +49,28 @@ Meteor.startup(function () {
       userId: userId,
       start: {$gte: start},
       end: {$lte: end}
-    }).fetch();
+    });
 
     // Return all times as available if no events found for that day
-    if(userSchedule.length === 0)
+    if(userSchedule)
+      userSchedule = userSchedule.fetch();
+    else
       return dayHourHash;
+
+    // Return empty array if no event preferences set
+    var eventPrefs = Meteor.users.findOne({_id: userId}).events;
+    if(!eventPrefs)
+      return [];
+
+    // Calculate all the event hours to filter for
+    var eventHoursFilter = [];
+    _.each(eventPrefs, function(pref) {
+      eventHoursFilter = eventHoursFilter.concat(eventTimeFilters[pref]);
+    });
+
+    // console.log('filter: ', eventHoursFilter);
+    dayHourHash = _.intersection(dayHourHash, eventHoursFilter);
+    // console.log('event filtered hours: ' + dayHourHash);
 
     // console.log('filtered schedule: ', userSchedule);
     var busyTimes = [];
@@ -58,6 +88,29 @@ Meteor.startup(function () {
     return dayHourHash;
   };
 
+  /** Write a meeting to the database **/
+  var createMeeting = function(userId, friendId, start, end) {
+    var user = Meteor.users.findOne({_id:userId});
+    var friend = Meteor.users.findOne({_id:friendId});
+    var meeting = {
+      users: [
+        {
+          id: userId,
+          name: user.profile.name,
+          fbookId: user.services.facebook.id
+        },
+        {
+          id: friendId,
+          name: friend.profile.name,
+          fbookId: friend.services.facebook.id
+        }
+      ],
+      start: start,
+      end: end
+    };
+
+    Meetings.insert(meeting);
+  };
 
   Meteor.methods({
     clearCalendars: function() {
@@ -194,9 +247,32 @@ Meteor.startup(function () {
     },
 
     // TODO: Change user preferences to save entire array
-    updateUserCalPreferences: function(param, value) {
-      console.log('Updating user with: ' + param + ': ' + value);
-      Meteor.users.update({_id: this.userId}, {$set: {param: value}});
+    updateUserCalPreferences: function(category, key, value) {
+      console.log('Updating user: ' + this.userId + ' cal pref ' + category +'. Setting ' + key + ': ' + value);
+      // Get current user's settings
+      if(category === 'days') {
+        var days = Meteor.users.findOne({_id: this.userId}, {days:1}).days || [];
+        // Add key if value is true
+        if(value) {
+          days.push(key);
+          days = _.uniq(days);
+        } else // Remove key if value is false
+          days = _.without(days, key);
+
+        console.log(days);
+        Meteor.users.update({_id: this.userId}, {$set: {days: days}});
+      } else if(category === 'events') {
+        var events = Meteor.users.findOne({_id: this.userId}, {events:1}).events || [];
+        // Add key if value is true
+        if(value) {
+          events.push(key);
+          events = _.uniq(events);
+        } else // Remove key if value is false
+          events = _.without(events, key);
+
+        console.log(events);
+        Meteor.users.update({_id: this.userId}, {$set: {events: events}});
+      }
     },
 
     setLocation: function(lng, lat) {
@@ -244,9 +320,22 @@ Meteor.startup(function () {
       // Get each user's free times and find the intersection
       var userFreeHours = getFreeTimes(today, tomorrow, userId);
       var friendFreeHours = getFreeTimes(today, tomorrow, friendId);
+      // console.log('user free hours: ',userFreeHours.join(','));
+      // console.log('friend free hours: ',friendFreeHours.join(','));
       var mutualTime = _.intersection(userFreeHours, friendFreeHours);
       // console.log('MUTUAL FREE TIME: ', mutualTime.join(','));
       return mutualTime;
+    },
+
+    testMeeting: function() {
+      var userId = 'Jxdmr2T4thi2GpJZw';
+      var friendId = 'tAMYpwWKYbHjXbiEa';
+      console.log('Creating meeting');
+      createMeeting(userId, friendId, moment().format('X'), moment().add('hours',1).format('X'));
+    },
+
+    lookupUser: function(friendId) {
+      return 'test';
     }
   });
 });

@@ -75,9 +75,22 @@
         {{/constant}}
         <button id="showUsers">Show Users</button>
         <button id="getMutualTime">Get Mutual Times</button>
-        <h4>Events</h4>
-        <span>TODO: Show event requests here</span>
+        <button id="testButton">Test Button!</button>
+        {{> meetings}}
       </div>
     </div>
+  </div>
+</template>
+
+<template name="meetings">
+  <h4>Meetings</h4>
+  <div class="meetings">
+    {{#each meetings}}
+    <div class="meeting">
+      <span class="meeting-date">{{format_time start end}}:<span>
+      <span>Meeting with <strong>{{lookup_user_name users}}</strong></span>
+      <img src="https://graph.facebook.com/{{lookup_user_id users}}/picture"/>
+    </div>
+    {{/each}}
   </div>
 </template>
