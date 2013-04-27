@@ -110,7 +110,6 @@ var handleCalendarResponse = function(err, data) {
     }
     calendarArray.push({gCalId: item.id, summary: item.summary});
   });
-
   // Store these calendars in the database
   Meteor.call('importCalendars', Meteor.userId(), calendarArray, function(err, res){
     if(err) console.log('err - ', err);
