@@ -32,7 +32,9 @@
     <span class="friend-info span6">{{name}}</span>
     <div>
       <div class="slider-frame">
-        <span class="slider-button{{#if isSelected}} on{{/if}}" id="friend{{id}}"></span>
+        {{#constant}}
+        <span class="slider-button {{#if isSelected}}on{{/if}}" id="friend{{id}}"></span>
+        {{/constant}}
       </div>
     </div>
   </div>

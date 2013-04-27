@@ -77,11 +77,18 @@ Template.friend.preserve({
 Template.friend.events({
  'click .slider-button': function(e) {
     var status;
-    $(e.target).toggleClass('on');
-    if($(e.target).hasClass('on'))
+    var $node = $(e.target);
+    console.log(e.target);
+    $node.toggleClass('on');
+    if($node.hasClass('on')) {
       status = true;
-    else
+      $node.addClass('slide-left');
+      $node.removeClass('slide-right');
+    } else {
       status = false;
+      $node.addClass('slide-left');
+      $node.removeClass('slide-right');
+    }
     Meteor.call('toggleFriend', this.id, status);
   }
 });
