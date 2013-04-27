@@ -28,7 +28,7 @@ Meteor.Router.filters({
   }
 });
 
-Meteor.Router.filter('checkLoggedIn', {only: ['main_page', 'friends_page', 'map_page', 'calendar_page']});
+Meteor.Router.filter('checkLoggedIn', {only: ['main_page', 'friends_page', 'calendar_page']});
 
 /*******************
 *** CURRENT PAGE ***
@@ -57,6 +57,8 @@ var mapInitialize = function() {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
 
+      Meteor.call('setLocation', position.coords.longitude, position.coords.latitude);
+
       var marker = new google.maps.Marker({
         map: map,
         position: pos,
@@ -65,6 +67,12 @@ var mapInitialize = function() {
       });
 
       map.setCenter(pos);
+
+      // Click handler to add new points on the map
+      google.maps.event.addListener(map, 'click', function(event) {
+        placeMarker(event.latLng);
+      });
+
     }, function() {
       handleNoGeolocation(true);
     });
@@ -72,7 +80,17 @@ var mapInitialize = function() {
     // Browser doesn't support Geolocation
     handleNoGeolocation(false);
   }
-}
+};
+
+var placeMarker = function(location) {
+  console.log(location.lng(), location.lat());
+  Meteor.call('setLocation', location.lng(), location.lat());
+  var marker = new google.maps.Marker({
+    position: location,
+    animation: google.maps.Animation.DROP,
+    map: map
+  });
+};
 
 function handleNoGeolocation(errorFlag) {
   if (errorFlag) {
@@ -97,3 +115,17 @@ Template.main_page.rendered = function() {
   google.maps.event.addDomListener(window, 'load', mapInitialize);
   google.maps.event.trigger(window, 'load');
 };
+
+Template.main_page.events({
+  'click #showUsers': function() {
+    console.log('showUsers clicked');
+    Meteor.call('getNearbyUsers', 25, function(err, results) {
+      console.log(results);
+      _.each(results, function(item) {
+        console.log(item.loc);
+        var position = new google.maps.LatLng(item.loc[1], item.loc[0]);
+        setTimeout(placeMarker(position), 500);
+      });
+    });
+  }
+});

@@ -31,12 +31,13 @@ Meteor.startup(function () {
     /** Writes the Google calendar ids to the collection if they don't exist.
         Returns the number of records inserted **/
     importCalendars: function(userId, calendars) {
+      console.log('Importing calendars for userId: ' + userId);
       var count = 0;
 
       // Loop through each calendar
       _.each(calendars, function(calendar) {
         // Insert the calendar if not found
-        if(!Calendars.findOne({gCalId: calendar.gCalId})) {
+        if(Calendars.find({gCalId: calendar.gCalId, userId: userId}).count() === 0) {
           count++;
           calendar['userId'] = userId;
           calendar['isSelected'] = false;
@@ -93,15 +94,99 @@ Meteor.startup(function () {
     //   Meteor.users.update({_id: userId}, {$set: {friends: friends}});
     // },
 
+    /**
+      - Save friend setting
+      - Lookup Fbook friendlist based on facebook Id
+      - Find friend's friendlist
+      - Filter friend list to get the isSelected property off the user
+      - If isSelected on both, then add account to both users
+      friendsList: {
+        mutualFriends: {
+          123
+          456
+        }
+      }
+      {
+  "loc" : [
+    37.7837147,
+    -122.40909559999999
+  ],
+  "userId" : "asdf"
+}
+      - If !isSelected on one, then remove account from both users
+    **/
     toggleFriend: function(friendId, status) {
-      console.log('Changing user: ' + this.userId + ' friend: ' + friendId + ' to: ' + status);
       Friends.update({userId: this.userId, 'friendsList.id': friendId}, {$set: {'friendsList.$.isSelected': status}});
+      console.log('Changing user: ' + this.userId + ' friend: ' + friendId + ' to: ' + status);
+      console.log('****');
+
+      // Get friend's friendlist
+      var fbookObj = Friends.findOne({'fbookId': friendId});
+
+      // Determine whether both friends selected each other
+      if(fbookObj) {
+        console.log('# of friends: ' + fbookObj.friendsList.length);
+
+        // Filter current user's object out of friend's friendlist
+        var userFromFriendList = _.filter(fbookObj.friendsList, function(friend) {
+          return friend.id === Meteor.user().services.facebook.id;
+        })[0];
+        console.log('user in friend list: ', userFromFriendList);
+        console.log(status, userFromFriendList.isSelected);
+        if(status && userFromFriendList.isSelected) {
+          console.log('MUTUAL FRIENDS!');
+          Friends.update({userId: fbookObj.userId}, {$addToSet: {mutualFriends: this.userId}});
+          Friends.update({userId: this.userId}, {$addToSet: {mutualFriends: fbookObj.userId}});
+        } else {
+          console.log('NOT FRIENDS!');
+          if(fbookObj.mutualFriends) {
+            var index = fbookObj.mutualFriends.indexOf(this.userId);
+            if(index !== -1) {
+              fbookObj.mutualFriends.splice(index, 1);
+            }
+          }
+        }
+        console.log('****');
+      }
     },
 
     // TODO: Change user preferences to save entire array
     updateUserCalPreferences: function(param, value) {
       console.log('Updating user with: ' + param + ': ' + value);
       Meteor.users.update({_id: this.userId}, {$set: {param: value}});
+    },
+
+    setLocation: function(lng, lat) {
+      console.log('Setting user: ' + this.userId + ' (longitude, latitude): (' + lng + ',' + lat +')');
+      Locations.update({userId: this.userId}, {
+        $set: {
+          loc: [lng, lat]
+        }
+      }, {upsert: true});
+    },
+
+    getNearbyUsers: function(distance) {
+      console.log('Getting nearby users for userId: ' + this.userId);
+      var userLoc = Locations.findOne({userId: this.userId});
+      if(userLoc.loc) {
+        // db.locations.find( { loc: { $within: { $center: [[-122,37],10/3959] } } });
+        // console.log(userLoc);
+
+        var locations = Locations.find({
+          loc: {
+            $within: {
+              $center: [
+                [userLoc.loc[0], userLoc.loc[1]],
+                distance / 69
+              ]
+            }
+          }
+        });
+        locations = locations.fetch();
+        // console.log('loc - ', locations);
+        return locations;
+      } else
+        return [];
     }
   });
 });
