@@ -127,5 +127,12 @@ Template.main_page.events({
         setTimeout(placeMarker(position), 500);
       });
     });
+  },
+
+  'click #getMutualTime': function() {
+    console.log('getting mutual times');
+    Meteor.call('getMutualTimes', 'Jxdmr2T4thi2GpJZw', 'tAMYpwWKYbHjXbiEa', function(err, results) {
+      console.log(results);
+    });
   }
 });

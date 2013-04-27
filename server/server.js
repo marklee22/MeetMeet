@@ -16,6 +16,49 @@ Meteor.startup(function () {
     return Friends.find({userId: this.userId});
   });
 
+  /*********************
+  *** SERVER METHODS ***
+  *********************/
+
+  /**
+    - Get user schedule
+    - Find all times for current day that are free
+      - Calculate time range of tomorrow - today
+      - Return if either user has an all day event
+      - Create a hash of the 24 hours
+      - Delete elements where times are busy
+    - Find intersection between the two arrays
+  **/
+  var getFreeTimes = function(start, end, userId) {
+    var dayHourHash = _.range(0, 24, 0.5);
+    // console.log('**********');
+    var userSchedule = Events.find({
+      userId: userId,
+      start: {$gte: start},
+      end: {$lte: end}
+    }).fetch();
+
+    // Return all times as available if no events found for that day
+    if(userSchedule.length === 0)
+      return dayHourHash;
+
+    // console.log('filtered schedule: ', userSchedule);
+    var busyTimes = [];
+    _.each(userSchedule, function(event) {
+      var startHour = (event.start - start) / 3600;
+      var endHour = (event.end - start) / 3600;
+      busyTimes = busyTimes.concat(_.range(startHour, endHour, 0.5));
+    });
+
+    // console.log('busyTimes: ', busyTimes);
+    dayHourHash = _.difference(dayHourHash, busyTimes);
+    // console.log('userFreeTime: ', dayHourHash);
+
+    // console.log('**********');
+    return dayHourHash;
+  };
+
+
   Meteor.methods({
     clearCalendars: function() {
       Calendars.remove({});
@@ -187,6 +230,23 @@ Meteor.startup(function () {
         return locations;
       } else
         return [];
+    },
+
+    getMutualTimes: function(userId, friendId) {
+      console.log('Searching for mutual times between friends');
+      // console.log(userTimeHash);
+
+      // Calculate the beginning of today and tomorrow for a date range
+      var today = moment().startOf('day').format('X');
+      var tomorrow = moment().add('day',1).startOf('day').format('X');
+      // console.log('start, end: ', today, tomorrow);
+
+      // Get each user's free times and find the intersection
+      var userFreeHours = getFreeTimes(today, tomorrow, userId);
+      var friendFreeHours = getFreeTimes(today, tomorrow, friendId);
+      var mutualTime = _.intersection(userFreeHours, friendFreeHours);
+      // console.log('MUTUAL FREE TIME: ', mutualTime.join(','));
+      return mutualTime;
     }
   });
 });
