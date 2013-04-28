@@ -1,4 +1,5 @@
 Session.set('Date', new Date());
+var dayValues = ['Su', 'M', 'T', 'W', 'R', 'F', 'Sa'];
 
 Meteor.autosubscribe(function () {
   if(Meteor.user()) {
@@ -41,14 +42,16 @@ Deps.autorun(function() {
 *** FULL CALENDAR FUNCS ***
 **************************/
 
-Template.full_calendar.hideCalPrefs = function() {
-  return !Session.get('showCalPrefs');
+Template.full_calendar.showCalPrefs = function() {
+  return Session.get('showCalPrefs');
 };
 
 Template.full_calendar.rendered = function() {
   $cal = $('#fullCalendar');
   $cal.empty();
   $cal.fullCalendar({
+    // theme: true, // TODO: undue this to allow jQuery UI themes
+    aspectRatio: 2,
     header: {
       left: 'prev, next',
       center: 'title',
@@ -93,11 +96,22 @@ Template.full_calendar.rendered = function() {
     $cal.fullCalendar('addEventSource', Session.get('gEvents'));
 
   if(Session.get('dayPrefs')) {
-    _.each(Session.get('dayPrefs'), function(day) {
+    var daysToIgnore = _.difference(dayValues, Session.get('dayPrefs'));
+    _.each(daysToIgnore, function(day) {
       toggleDaysOfWeek(day);
     });
   }
 };
+
+Template.full_calendar.events({
+  'click #hideCalPrefs': function() {
+    Session.set('showCalPrefs', false);
+  },
+
+  'click #showCalPrefs': function() {
+    Session.set('showCalPrefs', true);
+  }
+});
 
 /****************************
 *** GOOGLE CALENDAR FUNCS ***
@@ -219,7 +233,6 @@ var toggleDaysOfWeek = function(day) {
     F: 6,
     Sa: 7
   };
-  console.log(days[day]);
 
   var $days = $('#fullCalendar table.fc-border-separate tr').find('td:nth-child(' + days[day] + ')');
   _.each($days, function(day, index) {
@@ -242,12 +255,12 @@ var updateUserPreferences = function(elm, category) {
   // Get the value of the element
   key = $(elm).val();
 
-  // Determine whether the box is being checked or unchecked
+  // Determine whether the option is being selected or deselected
   var value;
-  if($(elm).is(':checked'))
-    value = true;
-  else
+  if($(elm).hasClass('btn-danger'))
     value = false;
+  else
+    value = true;
 
   // Update user preference
   Meteor.call('updateUserCalPreferences', category, key, value);
@@ -255,10 +268,9 @@ var updateUserPreferences = function(elm, category) {
 
 Template.calendar_prefs.daysOfWeek = function() {
   var days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
-  var values = ['Su', 'M', 'T', 'W', 'R', 'F', 'Sa'];
   return _.map(days, function(day, i) {
-    var checked = Session.get('dayPrefs').indexOf(values[i]) === -1 ? false : true;
-    return {day: days[i], value: values[i], checked: checked};
+    var checked = Session.get('dayPrefs').indexOf(dayValues[i]) === -1 ? false : true;
+    return {day: days[i], value: dayValues[i], checked: checked};
   });
 };
 
@@ -280,25 +292,29 @@ Template.calendar_prefs.hasCalendars = function() {
 };
 
 Template.calendar_prefs.events({
+  'submit': function(e) {
+    e.preventDefault();
+  },
+
   'click .dayBox': function(e) {
+    $(e.target).toggleClass('btn-danger');
+    $(e.target).toggleClass('btn-success');
     toggleDaysOfWeek($(e.target).val());
     updateUserPreferences(e.target, 'days');
   },
 
   'click .eventBox': function(e) {
+    $(e.target).toggleClass('btn-danger');
+    $(e.target).toggleClass('btn-success');
     updateUserPreferences(e.target, 'events');
   },
 
-  'click button.gCal.getCalendars': function() {
+  'click .getCalendars': function() {
     gCalendarInit(getAllCalendars);
   },
 
-  'click button.gCal.getEvents': function() {
+  'click .getEvents': function() {
     gCalendarInit(getEvents);
-  },
-
-  'click #hideCalPrefs': function() {
-    Session.set('showCalPrefs', false);
   }
 });
 
@@ -310,19 +326,13 @@ Template.calendar_page.selectCalendars = function() {
   return Session.get('selectCalendars');
 };
 
-Template.calendar_page.showUserPrefs = function() {
+Template.calendar_page.showCalPrefs = function() {
   return Session.get('showCalPrefs');
 };
 
 Template.calendar_page.showDayView = function() {
   return Session.get('selectedDay');
 };
-
-Template.calendar_page.events({
-  'click #showCalPrefs': function() {
-    Session.set('showCalPrefs', true);
-  }
-});
 
 /***********************
 *** SELECT CALENDARS ***

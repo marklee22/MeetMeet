@@ -2,9 +2,6 @@
   {{#if selectCalendars}}
     {{> select_calendars}}
   {{else}}
-    {{#if showUserPrefs}}
-      {{> calendar_prefs}}
-    {{/if}}
     {{> full_calendar}}
   {{/if}}
 </template>
@@ -12,9 +9,14 @@
 <template name="full_calendar">
   <div class="row-fluid">
     <div class="span10 offset1">
-      {{#if hideCalPrefs}}
-        <button class="btn" id="showCalPrefs">Show Preferences</button>
+      <div class="cal-preferences text-center">
+      {{#if showCalPrefs}}
+        <button class="btn btn-inverse hideCalPrefs" id="hideCalPrefs">Hide Preferences</button>
+        {{> calendar_prefs}}
+      {{else}}
+        <button class="btn btn-primary showCalPrefs" id="showCalPrefs">Show Preferences</button>
       {{/if}}
+      </div>
       {{#constant}}
       <div id="fullCalendar"></div>
       {{/constant}}
@@ -25,16 +27,16 @@
 <template name="select_calendars">
   <div class="row-fluid">
     <div class="span4 offset4">
-      <div class="calendars">
-        <h3>Select Calendars to Import</h3>
+      <div class="calendars-select">
+        <h3 class="text-center">Select Calendars to Import</h3>
         <ul>
           {{#each calendars}}
-            <label class="checkbox">
+            <label class="checkbox calendar-select-input">
               <input type="checkbox" value="{{gCalId}}" {{#if isSelected}}checked{{/if}}>{{summary}}</input>
             </label>
           {{/each}}
         </ul>
-        <button id="importCals" class="btn btn-primary">Save</button>
+        <button id="importCals" class="btn btn-primary calendar-select-button">Save</button>
       </div>
     </div>
   </div>
@@ -42,35 +44,34 @@
 
 <template name="calendar_prefs">
   <div class="row-fluid">
-    <div class="span10 offset1">
-      <form id="calendarPreferences" class="form-horizontal">
-        <h4>Event Preferences</h4>
-        <div class="dayPreferences">
-          <h3>Days to <strong>NOT</strong> Meet</h3>
-          {{#each daysOfWeek}}
-          <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" id="day-{{value}}" value="{{value}}" {{#if checked}}checked{{/if}}>{{day}}</input>
-          </label>
-          {{/each}}
+    <div class="span8 offset2">
+      <div class="cal-options text-center">
+        <h4>Step1:</h4><strong> Import Calendars</strong>
+        <div>
+          <button class="btn btn-large getCalendars text-center"></button>
+          {{#if hasCalendars}}
+          <button class="btn getEvents txt-center">Sync Events</button>
+          {{/if}}
         </div>
-        <div class="eventPreferences">
-          <h3>Types of Events</h3>
-          {{#each eventTypes}}
-          <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" id="event-{{value}}" value="{{value}}" {{#if checked}}checked{{/if}}>{{event}}</input>
-          </label>
-          {{/each}}
-        </div>
-      </form>
-      <h4>Google Calendar buttons</h4>
-      <button class="gCal getCalendars">Get Google Calendars</button>
-      {{#if hasCalendars}}
-      <button class="gCal getEvents">Sync Events</button>
-      {{/if}}
-      {{#if imported_events}}
-      <p>Successfully imported/updated <strong>{{importedEvents}}</strong> events!</p>
-      {{/if}}
+        <form id="calendarPreferences" class="form-horizontal">
+          <h4>Step 2:</h4><strong> Select Event Types</strong>
+          <div class="eventPreferences">
+            <div class="btn-group">
+            {{#each eventTypes}}
+              <button class="eventBox btn btn-large {{#if checked}}btn-success{{else}}btn-danger{{/if}}" value="{{value}}">{{event}}</button>
+            {{/each}}
+            </div>
+          </div>
+          <h4>Step 3:</h4><strong> Days of Week</strong>
+          <div class="dayPreferences">
+            <div class="btn-group">
+            {{#each daysOfWeek}}
+              <button class="dayBox btn btn-large {{#if checked}}btn-success{{else}}btn-danger{{/if}}" value="{{value}}">{{day}}</button>
+            {{/each}}
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-    <button class="btn" id="hideCalPrefs">Hide Preferences</button>
   </div>
 </template>
