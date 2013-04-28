@@ -2,6 +2,8 @@ Meteor.subscribe('friendData');
 
 Deps.autorun(function() {
   if(Meteor.user() && Friends.findOne({})) {
+    if(!Session.get('friendListLetter'))
+      Session.set('friendListLetter', 'A');
     var friends = Friends.findOne({}).friendsList;
     if(friends) {
       friends = _.sortBy(friends, function(friend) {

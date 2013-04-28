@@ -1,7 +1,18 @@
 <template name="signin_button">
   <ul class="nav pull-right">
     <li class="dropdown">
-      <a href="#" class="dropdown-toggle">Sign In <b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle">{{title}} <b class="caret"></b></a>
+      {{#if user}}
+      <ul class="dropdown-menu">
+        <li>
+          <a href="/settings">User Settings</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <input type="submit" name="signout" class="btn btn-small btn-primary signin-input signout-button" value="Sign Out"></input>
+        </li>
+      </ul>
+      {{else}}
       <ul class="dropdown-menu">
         <li>
           <label for="signin-email">Email</label>
@@ -15,6 +26,7 @@
           <input type="submit" name="signin" class="btn btn-small btn-primary signin-input signin-button" value="Sign In"></input>
         </li>
       </ul>
+      {{/if}}
     </li>
   </ul>
 </template>

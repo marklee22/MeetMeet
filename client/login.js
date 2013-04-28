@@ -28,6 +28,14 @@ Template.signin_page.events({
   }
 });
 
+Template.signin_button.user = function() {
+  return Meteor.user();
+};
+
+Template.signin_button.title = function() {
+  return Meteor.user() ? Meteor.user().profile.name : 'Sign In';
+};
+
 Template.signin_button.events({
   'click a.dropdown-toggle': function(e) {
     $(e.target).closest('li.dropdown').toggleClass('open');
@@ -36,13 +44,17 @@ Template.signin_button.events({
 
   'click .signin-button': function(e) {
     e.preventDefault();
-    console.log('signed in');
     Meteor.loginWithPassword($('#signin-email').val(), $('#signin-password').val(), function(err) {
       if(err) {
         Session.set('alert', err);
         console.log(err);
       }
     });
+  },
+
+  'click .signout-button': function(e) {
+    e.preventDefault();
+    Meteor.logout();
   }
 });
 

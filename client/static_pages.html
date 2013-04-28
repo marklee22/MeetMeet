@@ -1,20 +1,20 @@
 <template name="header">
-  <div class="navbar header">
+  <div class="navbar header navbar-inverse">
     <div class="navbar-inner">
       <div class="span2 offset1">
         <a class="brand" href="/splash">MeetMeet!</a>
       </div>
-      <div class="span6">
+      <div class="span8">
       <ul class="nav">
         {{#if user}}
-        <li><a href="/">Home</a></li>
-        <li><a href="/calendar">Calendar</a></li>
-        <li><a href="/friends">Friends</a></li>
-        <li><a href="/FAQ">How it Works</a></li>
+        <li class="span2"><a href="/">Home</a></li>
+        <li class="span2"><a href="/calendar">Calendar</a></li>
+        <li class="span2"><a href="/friends">Friends</a></li>
+        <li class="span2"><a href="/FAQ">How it Works</a></li>
         {{/if}}
       </ul>
     </div>
-    <div class="span3 right">
+    <div class="span2">
       {{> signin_button}}
     </div>
   </div>
@@ -54,15 +54,29 @@
 <template name="faq_page">
   <div class="row-fluid">
     <div class="span8 offset2">
-      <h4>How it Works!</h4>
-      <span>TODO: Instructions + Screenshots</span>
-      <ol>
-        <li>Create an account</li>
-        <li>Add Facebook and Google Calendar access</li>
-        <li>Download/Sync your Google Calendar</li>
-        <li>Select friends you'd like to meet</li>
-        <li>Friendster will find mutual friends who want to meet and setup meetings between you two!</li>
-      </ol>
+      <h4>How it Works</h4>
+      <dl class="faq">
+        <dt>Create an account</dt>
+        <dd>[Screenshot of step]</dd>
+
+        <dt>Add Facebook and Google Calendar access</dt>
+        <dd>[Screenshot of step]</dd>
+
+        <dt>Download/Sync your Google Calendar</dt>
+        <dd>[Screenshot of step]</dd>
+
+        <dt>Select friends you'd dtke to meet</dt>
+        <dd>[Screenshot of step]</dd>
+
+        <dt>Friendster will find mutual friends who want to meet and setup meetings between you two!</dt>
+        <dd>[Screenshot of step]</dd>
+      </dl>
+
+      <h4>FAQ</h4>
+      <dl class="faq">
+        <dt>Do I need Facebook and Google Calendar?</dt>
+        <dd>[Explanation]</dd>
+      </dl>
     </div>
   </div>
 </template>
@@ -70,9 +84,34 @@
 <template name="about_page">
   <div class="row-fluid">
     <div class="span8 offset2">
-      <h3>About Us</h3>
-      <p>Check out my blog: </p>
-      <p>This started as my personal project while attending <a href="www.hackreactor.com">Hack Reactor</a>.</p>
+      <h2>About</h2>
+      <div class="about">
+        <p>
+          In Spring 2012, I was living and working in San Francisco out of a small office. Since I worked downtown, I would often grab lunch with friends.
+          One day I wondered to myself why is it so hard to plan a simple lunch meetup with my friends?  Then that got me wondering, who else lives near
+          me that I lost touch with?
+        </p>
+        <p>
+          I quickly realized there was a problem that I could solve by building an awesome app that accomplished two things:
+        </p>
+        <p>
+          <ol>
+            <li>Take the awkwardness out of rekindling old Facebook friendships</li>
+            <li>Automating the planning of events based on synchronized calendars between friends</li>
+          </ol>
+        </p>
+        <p>
+          Unfortunately, at the time, I was not a very skilled programmer and the idea lost its luster over time as I spent more time teaching myself
+          fundamentals than just hacking at it.
+        </p>
+        <p>
+          However, after a wild turn of events, I decided to quit my job and enroll in a coding school called,
+          <a href="www.hackreactor.com">Hack Reactor</a>, where the moons aligned. One part of the curriculum at Hack Reactor is to work on a personal
+          project for a week. This is my personal project, and I hope you all enjoy it!
+        </p>
+        <p class="signature">
+          <small>~Mark</small>
+        </p>
     </div>
   </div>
 </template>
@@ -81,6 +120,22 @@
   <div class="row-fluid">
     <div class="span2 offset5">
       <h2>Loading</h2>
+    </div>
+  </div>
+</template>
+
+<template name="contact_page">
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="contact hero-unit">
+        <h2 class="text-center">Contact Me</h2>
+        <p class="text-center text-success">
+          Positive feedback only. I'm just one guy.
+        </p>
+        <p class="text-center">
+          You can contact me <a href="mailto:marklee22@gmail.com">HERE</a>!
+        </p>
+      </div>
     </div>
   </div>
 </template>

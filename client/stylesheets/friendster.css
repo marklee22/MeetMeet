@@ -139,10 +139,18 @@ div.friendSlider li {
 .header li {
   padding-right: 20px;
   font-size: 20px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
 .dropdown-menu .signin-button {
   width: 96%;
+}
+
+.dropdown-menu label {
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .dropdown-menu .signin-input, .dropdown-menu label {
@@ -169,9 +177,19 @@ div.footer li a {
 }
 
 /* Splash */
+.jumbotron h1 {
+  color: white;
+  text-shadow: black 3px 5px 20px;
+}
+
+.jumbotron p {
+  text-shadow: rgba(240, 232, 232, 0.75) 1px 1px 4px;
+}
+
 .jumbotron {
   text-align: center;
-  background: rgb(207, 203, 203);
+  background: rgba(126, 123, 123, 0.69);
+  box-shadow: 0px 0px 89px rgba(86, 107, 160, 1) inset;
 }
 
 .jumbotron p, .jumbotron a, .jumbotron h1 {
@@ -180,4 +198,53 @@ div.footer li a {
 
 .splash-lead {
   color: rgb(40, 119, 192);
+}
+
+/* About */
+.about, .about li {
+  font-size: 16px;
+  font-family: 'Droid Serif', serif;
+  line-height: 32px;
+}
+
+.about p {
+  margin-bottom: 12px;
+}
+
+.about .signature, .about li {
+  margin-left: 20px;
+}
+
+/* Contact */
+.contact.hero-unit {
+  width: 41%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 60px;
+}
+
+.contact {
+  font-size: 20px;
+}
+
+.contact h2 {
+  font-size: 40px;
+}
+
+/* FAQ */
+.faq {
+  counter-reset: my-badass-counter;
+}
+
+.faq dt:before {
+  content: counter(my-badass-counter);
+  counter-increment: my-badass-counter;
+  background-color: gray;
+  width: 10px;
+  height: 10px;
+  color: white;
+}
+
+.faq .counter {
+  display: inline-block;
 }
