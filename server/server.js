@@ -18,7 +18,7 @@ Meteor.startup(function () {
 
   // Return all meetings a user is involved with
   Meteor.publish('meetingData', function() {
-    return Meetings.find({'users.id': this.userId});
+    return Meetings.find({'users.id': this.userId},{sort: {start:-1}, limit: 10});
   });
 
   /*********************

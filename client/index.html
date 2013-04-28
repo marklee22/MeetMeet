@@ -85,12 +85,29 @@
 <template name="meetings">
   <h4>Meetings</h4>
   <div class="meetings">
-    {{#each meetings}}
-    <div class="meeting">
-      <span class="meeting-date">{{format_time start end}}:<span>
-      <span>Meeting with <strong>{{lookup_user_name users}}</strong></span>
-      <img src="https://graph.facebook.com/{{lookup_user_id users}}/picture"/>
+    <div class="current-meeting span6">
+      {{#if new_meeting}}
+      <h3>New Meeting!</h3>
+      {{> meeting new_meeting}}
+      <button id="acceptMeeting">Accept</button>
+      <button id="declineMeeting">Decline</button>
+      {{else}}
+      <h3>No new meetings yet...</h3>
+      {{/if}}
     </div>
-    {{/each}}
+    <div class="meeting-history span6">
+      <h3>Meeting History</h3>
+      {{#each meetings}}
+        {{> meeting}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="meeting">
+  <div class="meeting">
+    <span class="meeting-date">{{format_time start end}}:</span>
+      <span>Meeting with <strong>{{lookup_user_name users}}</strong></span>
+    <img src="https://graph.facebook.com/{{lookup_user_id users}}/picture"/>
   </div>
 </template>
