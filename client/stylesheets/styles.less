@@ -25,10 +25,6 @@ body{
   border-bottom: 1px solid #ffffff;
 }
 
-.highlight {
-  background-color: gray;
-}
-
 div.main-content {
   min-height: 400px;
 }
@@ -36,103 +32,6 @@ div.main-content {
 button.gCal {
   display: block;
   margin-top: 10px;
-}
-
-button.gCal.getCalendars {
-
-}
-
-span.friend-info, .friend img {
-  float: left;
-}
-
-div.friend {
-  width: 100%;
-}
-
-div.friendSlider ul {
-  list-style: none;
-  font-size: 15px;
-  padding:13px;
-
-}
-
-div.friendSlider li {
-  display: inline;
-  padding: 4px;
-  border: 1px solid black;
-}
-
-.slider-frame {
-  float: left;
-  position: relative;
-  display: block;
-  margin: 0 auto;
-  width: 84px;
-  height: 27px;
-  background-color: rgb(246, 249, 251);
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.25);
-  box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.25);
-}
-
-.slider-button{
-  display: block;
-  width: 43px;
-  height: 27px;
-  line-height: 27px;
-  background: #EDF2F7;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-/*  -o-transition: all 0.5s ease-in-out;
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;*/
-
-  color: #000;
-  font-family:sans-serif;
-  font-size:11px;
-  font-weight:bold;
-  text-align: center;
-  cursor: pointer;
-  -webkit-box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.25);
-  box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.25);
-}
-
-.slider-button.on {
-  margin-left: 40px;
-  background: rgb(128, 123, 250);
-}
-
-.slider-button.on.slide-right {
-  -webkit-animation-delay: 0.2s;
-  -webkit-animation-duration: 1.0s;
-  -webkit-animation-name: buttonSlide;
-  -webkit-animation-iteration-count: 1;
-  -webkit-animation-fill-mode: forwards;
-
-}
-
-.slider-button.slide-left {
-  -webkit-animation-delay: 0.2s;
-  -webkit-animation-duration: 1.0s;
-  -webkit-animation-name: buttonSlide;
-  -webkit-animation-iteration-count: 1;
-  -webkit-animation-fill-mode: backwards;
-  -webkit-animation-direction: reverse;
-}
-
-@-webkit-keyframes "buttonSlide" {
-  from {
-    background: #EDF2F7;
-  }
-  to {
-    background: rgb(128, 123, 250);
-    margin-left: 40px;
-  }
 }
 
 /* Header */
@@ -278,18 +177,18 @@ div.footer li a {
   background-position-x: 20px;
 }
 
-.cal-preferences {
+.cal-preferences, .friend-preferences {
   margin-bottom: 15px;
-  .showCalPrefs {
+  .showCalPrefs, .showFriendPrefs {
     height: 30px;
     margin-bottom: 15px;
   }
-  .hideCalPrefs {
+  .hideCalPrefs, .hideFriendPrefs {
     margin-bottom: 15px;
   }
 }
 
-.cal-options, .calendars-select {
+.cal-options, .calendars-select, .friend-instructions {
   border: 1px solid black;
   background-color: rgba(248, 248, 248, 0.61);
   border-radius: 22px;
@@ -397,4 +296,47 @@ div.footer li a {
 
 td.busy {
   background-color: rgb(250,128,114);
+}
+
+/* Friends */
+.friend-instructions {
+  margin-bottom: 15px;
+  .display-buttons {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 15px;
+  }
+}
+
+button.getFriends {
+  background-image: linear-gradient(to bottom, rgb(19, 55, 131), rgb(59, 89, 152));
+  background-color: rgb(19, 55, 131);
+}
+
+.getFriends:hover {
+  background-color: rgb(59, 89, 152);
+}
+
+.friends {
+  margin-top: 15px;
+}
+
+.friend {
+  height: 182px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 2px solid gray;
+  padding-top: 8px;
+  border-radius: 7px;
+  background: linear-gradient(rgb(228, 163, 163), rgb(255, 255, 255));
+  box-shadow: 3px 3px 6px rgb(184, 181, 181);
+  &.selected {
+    background: linear-gradient(rgb(181, 228, 163), #ffffff);
+  }
+  img {
+    border-radius: 7px;
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+  }
 }

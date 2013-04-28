@@ -2,8 +2,9 @@ Meteor.subscribe('friendData');
 
 Deps.autorun(function() {
   if(Meteor.user() && Friends.findOne({})) {
-    if(!Session.get('friendListLetter'))
+    if(!Session.get('friendListLetter')) {
       Session.set('friendListLetter', 'A');
+    }
     var friends = Friends.findOne({}).friendsList;
     if(friends) {
       friends = _.sortBy(friends, function(friend) {
@@ -58,39 +59,52 @@ var fbookInit = function(func) {
   }
 };
 
+/****************
+*** TEMPLATES ***
+****************/
+
+Template.friends_page.rendered = function() {
+  $('#letter-' + Session.get('friendListLetter')).removeClass('btn-inverse').addClass('btn-primary');
+};
+
+Template.friends_page.showInstructions = function() {
+  return Session.get('showFriendPrefs');
+};
+
 Template.friends_page.events({
   'click button.fbook.getFriends': function() {
     fbookInit(getFbookFriends);
   },
 
-  'click .friendSlider li': function(e) {
-    $('li.letter').removeClass('highlight');
-    $(e.target).addClass('highlight');
+  'click .friendSlider button': function(e) {
+    $('button.letter').removeClass('btn-primary');
+    $('button.letter').addClass('btn-inverse');
+    $(e.target).removeClass('btn-inverse');
+    $(e.target).addClass('btn-primary');
     Session.set('friendListLetter', $(e.target).text());
-  }
-});
+  },
 
-Template.friend.preserve({
-  '.slider-button[id]': function(node) {
-    return node.id;
+  'click #hideFriendPrefs': function() {
+    Session.set('showFriendPrefs', false);
+  },
+
+  'click #showFriendPrefs': function() {
+    Session.set('showFriendPrefs', true);
   }
 });
 
 Template.friend.events({
- 'click .slider-button': function(e) {
-    var status;
-    var $node = $(e.target);
+ 'click .friend-select': function(e) {
     console.log(e.target);
-    $node.toggleClass('on');
-    if($node.hasClass('on')) {
-      status = true;
-      $node.addClass('slide-left');
-      $node.removeClass('slide-right');
-    } else {
-      status = false;
-      $node.addClass('slide-left');
-      $node.removeClass('slide-right');
-    }
+
+    // Check if changing from true or false
+    var status = $(e.target).hasClass('btn-success') ? false : true;
+
+    // Toggle classes
+    $(e.target).toggleClass('btn-success');
+    $(e.target).toggleClass('btn-danger');
+
+    // Write to database the change
     Meteor.call('toggleFriend', this.id, status);
   }
 });

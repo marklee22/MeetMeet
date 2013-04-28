@@ -1,24 +1,44 @@
 <template name="friends_page">
   <div class="row-fluid">
-    <div class="span2 offset2">
-      <h3>Facebook buttons</h3>
-      <button class="fbook getFriends">Get Facebook Friends</button>
-    </div>
-    <div class="span6">
-      <div class="friendSlider">
-        <ul>
-          {{#each letters}}
-            <li class="letter">{{letter}}</li>
-          {{/each}}
-        </ul>
+    <div class="span10 offset1 text-center">
+      <div class="friend-preferences text-center">
+        <div/>
+      {{#if showInstructions}}
+        <div class="span6 offset3">
+          <button class="btn btn-inverse hideFriendPrefs" id="hideFriendPrefs">Hide Instructions</button>
+        </div>
+        <div class="friend-instructions span6 offset3 text-center">
+          <h4>Step 1:</h4><strong> Import Facebook Friends</strong>
+          <div>
+            <button class="btn btn-info fbook getFriends">Get Facebook Friends</button>
+          </div>
+          <h4>Step 2:</h4><strong> Select friends to meet!</strong>
+          <div class="display-buttons">
+            <button class="btn btn-mini btn-success">Will Meet!</button>
+            <button class="btn btn-mini btn-danger">No Meet!</button>
+          </div>
+          <div>
+        </div>
+      {{else}}
+        <div class="span6 offset3">
+          <button class="btn btn-primary showFriendPrefs text-center" id="showFriendPrefs">Show Instructions</button>
+        </div>
+      {{/if}}
+      </div>
+    <div class="span12">
+      <div class="friendSlider btn-group">
+        {{#each letters}}
+          <button class="btn btn-inverse letter" id="letter-{{letter}}">{{letter}}</button>
+        {{/each}}
       </div>
       {{> fbookFriends}}
     </div>
   </div>
+</div>
 </template>
 
 <template name="fbookFriends">
-  <div class="friends span8">
+  <div class="friends span10 offset1 text-center">
     <div></div>
     {{#each friends}}
       {{> friend}}
@@ -27,15 +47,15 @@
 </template>
 
 <template name="friend">
-  <div class="friend span12">
-    <img src="https://graph.facebook.com/{{id}}/picture"/>
-    <span class="friend-info span6">{{name}}</span>
+  <div class="friend {{#if isSelected}}selected{{/if}} span2">
     <div>
-      <div class="slider-frame">
-        {{#constant}}
-        <span class="slider-button {{#if isSelected}}on{{/if}}" id="friend{{id}}"></span>
-        {{/constant}}
-      </div>
+      <img src="https://graph.facebook.com/{{id}}/picture?type=normal"/>
+    </div>
+    <div>
+      <strong>{{name}}</strong>
+    </div>
+    <div class="span12">
+      <button class="friend-select btn btn-mini {{#if isSelected}}btn-success{{else}}btn-danger{{/if}}">{{#if isSelected}}Will Meet!{{else}}No Meet!{{/if}}</button>
     </div>
   </div>
 </template>
