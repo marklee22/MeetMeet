@@ -11,6 +11,8 @@ Deps.autorun(function() {
   if(Meteor.user()) {
     var calendars = Calendars.find({}).fetch();
     var events = Events.find({}).fetch();
+    Session.set('dayPrefs', Meteor.user().days || []);
+    Session.set('eventPrefs', Meteor.user().events || []);
     if(calendars) {
       Session.set('hasCalendars', true);
       Session.set('gCalendars', calendars);
@@ -89,6 +91,12 @@ Template.full_calendar.rendered = function() {
   // Render the events onto the calendar if they are not in sync
   if(Session.get('gEvents').length !== $cal.fullCalendar('clientEvents').length)
     $cal.fullCalendar('addEventSource', Session.get('gEvents'));
+
+  if(Session.get('dayPrefs')) {
+    _.each(Session.get('dayPrefs'), function(day) {
+      toggleDaysOfWeek(day);
+    });
+  }
 };
 
 /****************************
@@ -230,9 +238,9 @@ var toggleDaysOfWeek = function(day) {
 
 // TODO: Change user preferences to save entire array
 /** Write the user preferences to the database **/
-var updateUserPreferences = function(elm, param) {
+var updateUserPreferences = function(elm, category) {
   // Get the value of the element
-  param += param + $(elm).val();
+  key = $(elm).val();
 
   // Determine whether the box is being checked or unchecked
   var value;
@@ -242,14 +250,15 @@ var updateUserPreferences = function(elm, param) {
     value = false;
 
   // Update user preference
-  Meteor.call('updateUserCalPreferences', param, value);
+  Meteor.call('updateUserCalPreferences', category, key, value);
 };
 
 Template.calendar_prefs.daysOfWeek = function() {
   var days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
   var values = ['Su', 'M', 'T', 'W', 'R', 'F', 'Sa'];
   return _.map(days, function(day, i) {
-    return {day: days[i], value: values[i]};
+    var checked = Session.get('dayPrefs').indexOf(values[i]) === -1 ? false : true;
+    return {day: days[i], value: values[i], checked: checked};
   });
 };
 
@@ -257,7 +266,8 @@ Template.calendar_prefs.eventTypes = function() {
   var events = ['Breakfast', 'Lunch', 'Happy Hour', 'Dinner', 'Cocktails'];
   var values = ['bfast', 'lun', 'hh', 'din', 'ctails'];
   return _.map(events, function(event, i) {
-    return {event: events[i], value: values[i]};
+    var checked = Session.get('eventPrefs').indexOf(values[i]) === -1 ? false : true;
+    return {event: events[i], value: values[i], checked: checked};
   });
 };
 

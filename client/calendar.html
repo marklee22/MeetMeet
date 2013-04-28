@@ -46,10 +46,10 @@
       <form id="calendarPreferences" class="form-horizontal">
         <h4>Event Preferences</h4>
         <div class="dayPreferences">
-          <h3>Days of Week</h3>
+          <h3>Days to <strong>NOT</strong> Meet</h3>
           {{#each daysOfWeek}}
           <label class="checkbox inline">
-            <input class="dayBox" type="checkbox" id="day-{{value}}" value="{{value}}">{{day}}</input>
+            <input class="dayBox" type="checkbox" id="day-{{value}}" value="{{value}}" {{#if checked}}checked{{/if}}>{{day}}</input>
           </label>
           {{/each}}
         </div>
@@ -57,7 +57,7 @@
           <h3>Types of Events</h3>
           {{#each eventTypes}}
           <label class="checkbox inline">
-            <input class="eventBox" type="checkbox" id="event-{{value}}" value="{{value}}">{{event}}</input>
+            <input class="eventBox" type="checkbox" id="event-{{value}}" value="{{value}}" {{#if checked}}checked{{/if}}>{{event}}</input>
           </label>
           {{/each}}
         </div>
