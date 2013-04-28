@@ -28,6 +28,24 @@ Template.signin_page.events({
   }
 });
 
+Template.signin_button.events({
+  'click a.dropdown-toggle': function(e) {
+    $(e.target).closest('li.dropdown').toggleClass('open');
+    console.log(e.target);
+  },
+
+  'click .signin-button': function(e) {
+    e.preventDefault();
+    console.log('signed in');
+    Meteor.loginWithPassword($('#signin-email').val(), $('#signin-password').val(), function(err) {
+      if(err) {
+        Session.set('alert', err);
+        console.log(err);
+      }
+    });
+  }
+});
+
 /**************
 *** SIGN UP ***
 **************/

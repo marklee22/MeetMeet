@@ -141,6 +141,15 @@ div.friendSlider li {
   font-size: 20px;
 }
 
+.dropdown-menu .signin-button {
+  width: 96%;
+}
+
+.dropdown-menu .signin-input, .dropdown-menu label {
+  margin-left: 10px;
+  width: 156px;
+}
+
 /* Footer */
 div.footer {
   margin-bottom: 40px;
@@ -157,4 +166,18 @@ div.footer ul {
 
 div.footer li a {
   margin-left: 20px;
+}
+
+/* Splash */
+.jumbotron {
+  text-align: center;
+  background: rgb(207, 203, 203);
+}
+
+.jumbotron p, .jumbotron a, .jumbotron h1 {
+  padding:20px;
+}
+
+.splash-lead {
+  color: rgb(40, 119, 192);
 }

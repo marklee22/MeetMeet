@@ -1,3 +1,24 @@
+<template name="signin_button">
+  <ul class="nav pull-right">
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle">Sign In <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li>
+          <label for="signin-email">Email</label>
+          <input class="signin-input" type="text" id="signin-email"></input>
+        </li>
+        <li>
+          <label for="signin-password">Password</label>
+          <input class="signin-input" type="password" id="signin-password"></input>
+        </li>
+        <li>
+          <input type="submit" name="signin" class="btn btn-small btn-primary signin-input signin-button" value="Sign In"></input>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</template>
+
 <template name="signin_page">
   <div class="row-fluid">
     <div class="span4 offset4">
@@ -93,14 +114,6 @@
           </div>
         </div>
       </form>
-    </div>
-  </div>
-</template>
-
-<template name="loading_page">
-  <div class="row-fluid">
-    <div class="span2 offset5">
-      <h2>Loading</h2>
     </div>
   </div>
 </template>

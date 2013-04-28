@@ -1,0 +1,86 @@
+<template name="header">
+  <div class="navbar header">
+    <div class="navbar-inner">
+      <div class="span2 offset1">
+        <a class="brand" href="/splash">MeetMeet!</a>
+      </div>
+      <div class="span6">
+      <ul class="nav">
+        {{#if user}}
+        <li><a href="/">Home</a></li>
+        <li><a href="/calendar">Calendar</a></li>
+        <li><a href="/friends">Friends</a></li>
+        <li><a href="/FAQ">How it Works</a></li>
+        {{/if}}
+      </ul>
+    </div>
+    <div class="span3 right">
+      {{> signin_button}}
+    </div>
+  </div>
+</div>
+</template>
+
+<template name="footer">
+  <div class="footer span10 offset1">
+    <ul>
+      <li class="divider"></li>
+    </ul>
+    <div class="footer-left left">
+      <span>By <a href="http://markleeis.me">Mark Lee</a> of <a href="http://www.hackreactor.com">Hack Reactor</a></span>
+    </div>
+    <div class="footer-right right">
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<template name="splash_page">
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      <div class="jumbotron hero-unit">
+        <h1>MeetMeet!</h1>
+        <p class="lead splash-lead">Make your Facebook friends...Your REAL friends!</p>
+        <a class="btn btn-large btn-success" href="/signup">Sign up today</a>
+        <a class="btn btn-large btn-info" href="/FAQ">How It Works</a>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="faq_page">
+  <div class="row-fluid">
+    <div class="span8 offset2">
+      <h4>How it Works!</h4>
+      <span>TODO: Instructions + Screenshots</span>
+      <ol>
+        <li>Create an account</li>
+        <li>Add Facebook and Google Calendar access</li>
+        <li>Download/Sync your Google Calendar</li>
+        <li>Select friends you'd like to meet</li>
+        <li>Friendster will find mutual friends who want to meet and setup meetings between you two!</li>
+      </ol>
+    </div>
+  </div>
+</template>
+
+<template name="about_page">
+  <div class="row-fluid">
+    <div class="span8 offset2">
+      <h3>About Us</h3>
+      <p>Check out my blog: </p>
+      <p>This started as my personal project while attending <a href="www.hackreactor.com">Hack Reactor</a>.</p>
+    </div>
+  </div>
+</template>
+
+<template name="loading_page">
+  <div class="row-fluid">
+    <div class="span2 offset5">
+      <h2>Loading</h2>
+    </div>
+  </div>
+</template>
