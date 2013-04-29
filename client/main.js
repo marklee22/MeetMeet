@@ -10,6 +10,10 @@ Deps.autorun(function() {
       _.sortBy(meetings, function(mtg) { return -mtg.start; });
       Session.set('meetingRequest', meetings.shift());
       Session.set('meetings', meetings);
+
+      Meteor.call('yelpQuery', 'bars', true, function(err, results) {
+        Session.set('yelpPlaces', results.businesses);
+      });
     }
   }
 });
@@ -98,6 +102,21 @@ function handleNoGeolocation(errorFlag) {
 Template.main_page.rendered = function() {
   google.maps.event.addDomListener(window, 'load', mapInitialize);
   google.maps.event.trigger(window, 'load');
+};
+
+Template.main_page.places = function() {
+  return Session.get('yelpPlaces');
+};
+
+Template.place.all_cats = function(categories) {
+  categories = _.flatten(categories);
+  categories = _.filter(categories, function(cat) {
+    return cat.indexOf('_') === -1;
+  });
+  return _.uniq(categories, false, function(cat) {
+    // console.log(cat, cat2);
+    return cat.toUpperCase();
+  }).join(', ');
 };
 
 Template.main_page.events({

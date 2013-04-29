@@ -336,6 +336,59 @@ Meteor.startup(function () {
 
     lookupUser: function(friendId) {
       return 'test';
+    },
+
+    yelpQuery: function(search, isCategory, longitude, latitude) {
+      console.log('issuing yelp query');
+      var auth = {
+        //
+        // Update with your auth tokens.
+        //
+        consumerKey: "zRA7Y94WUAjTBOaEu7AWxQ",
+        consumerSecret: "TRP1YwHrfKUxqeh45YfUNGiGe_k",
+        accessToken: "8GTWrmD8AZl3h7abOIMkL2IjN0o9cSgp",
+        // This example is a proof of concept, for how to use the Yelp v2 API with javascript.
+        // You wouldn't actually want to expose your access token secret like this in a real application.
+        accessTokenSecret: "0HgdkaJkekYXYd_25MgE_ZRMoFQ",
+        serviceProvider: {
+          signatureMethod: "HMAC-SHA1"
+        }
+      };
+
+      var terms = 'food';
+      var near = 'San+Francisco';
+
+      var accessor = {
+        consumerSecret: auth.consumerSecret,
+        tokenSecret: auth.accessTokenSecret
+      };
+
+      parameters = {};
+      // Search term or categories query
+      if(isCategory)
+        parameters.category_filter = search;
+      else
+        parameters.term = search;
+      if(longitude && latitude) {
+        parameters.latitude = latitude;
+        parameters.longitude = longitude;
+      }
+      parameters.limit = 5;
+      parameters.location = near;
+      // parameters.push(['callback', 'cb']);
+      parameters.oauth_consumer_key = auth.consumerKey;
+      parameters.oauth_consumer_secret = auth.consumerSecret;
+      parameters.oauth_token = auth.accessToken;
+      parameters.oauth_signature_method = 'HMAC-SHA1';
+
+      var oauthBinding = new OAuth1Binding(auth.consumerKey, auth.consumerSecret, 'http://api.yelp.com/v2/search');
+      oauthBinding.accessTokenSecret = auth.accessTokenSecret;
+      var headers = oauthBinding._buildHeader();
+
+      console.log('params: ', parameters);
+
+      return oauthBinding._call('GET', 'http://api.yelp.com/v2/search', headers, parameters).data;
+
     }
   });
 });

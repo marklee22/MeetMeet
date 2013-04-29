@@ -34,6 +34,14 @@
             <button class="btn btn-mini btn-danger" id="declineMeeting">Decline</button>
           </div>
         </div>
+        <div class="places span12">
+          {{#if places}}
+          <div><h4 class="text-center">Suggested Places</h4></div>
+          {{#each places}}
+            {{> place}}
+          {{/each}}
+          {{/if}}
+        </div>
       </div>
       {{/if}}
       {{#if new_meeting}}
@@ -69,4 +77,19 @@
     <img src="https://graph.facebook.com/{{lookupUserId users}}/picture"/>
   </div>
   <div class="meeting-profileName">{{lookupUserName users}}</div>
+</template>
+
+<template name="place">
+  <div class="place span12">
+  <div class="profile span4">
+    <a href="{{url}}"><img src="{{image_url}}"/></a>
+    <img src="{{rating_img_url}}"/>
+    <span class="stars">({{review_count}} reviews)</span>
+  </div>
+  <div class="profile-info span7">
+    <span class="name">{{name}}</span>
+    <span class="categories">{{all_cats categories}}</span>
+    <span class="address">{{location.display_address}}</span>
+  </div>
+</div>
 </template>
