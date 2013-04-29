@@ -196,19 +196,6 @@ Meteor.startup(function () {
       - Find friend's friendlist
       - Filter friend list to get the isSelected property off the user
       - If isSelected on both, then add account to both users
-      friendsList: {
-        mutualFriends: {
-          123
-          456
-        }
-      }
-      {
-  "loc" : [
-    37.7837147,
-    -122.40909559999999
-  ],
-  "userId" : "asdf"
-}
       - If !isSelected on one, then remove account from both users
     **/
     toggleFriend: function(friendId, status) {
@@ -308,6 +295,11 @@ Meteor.startup(function () {
         return [];
     },
 
+    getLocation: function() {
+      console.log('Getting location of user: ' + this.userId);
+      return Locations.findOne({userId: this.userId}, {fields: {loc:1}});
+    },
+
     getMutualTimes: function(userId, friendId) {
       console.log('Searching for mutual times between friends');
       // console.log(userTimeHash);
@@ -334,48 +326,38 @@ Meteor.startup(function () {
       createMeeting(userId, friendId, moment().format('X'), moment().add('hours',1).format('X'));
     },
 
-    lookupUser: function(friendId) {
-      return 'test';
-    },
-
     yelpQuery: function(search, isCategory, longitude, latitude) {
-      console.log('issuing yelp query');
+      console.log('Yelp search for userId: ' + this.userId + '(search, isCategory, lng, lat) with vals (', search, isCategory, longitude, latitude, ')');
+      // TODO: configure as a Meteor service
       var auth = {
-        //
-        // Update with your auth tokens.
-        //
         consumerKey: "zRA7Y94WUAjTBOaEu7AWxQ",
         consumerSecret: "TRP1YwHrfKUxqeh45YfUNGiGe_k",
         accessToken: "8GTWrmD8AZl3h7abOIMkL2IjN0o9cSgp",
-        // This example is a proof of concept, for how to use the Yelp v2 API with javascript.
-        // You wouldn't actually want to expose your access token secret like this in a real application.
         accessTokenSecret: "0HgdkaJkekYXYd_25MgE_ZRMoFQ",
         serviceProvider: {
           signatureMethod: "HMAC-SHA1"
         }
-      };
-
-      var terms = 'food';
-      var near = 'San+Francisco';
-
-      var accessor = {
+      },
+      accessor = {
         consumerSecret: auth.consumerSecret,
         tokenSecret: auth.accessTokenSecret
-      };
-
+      },
       parameters = {};
+
       // Search term or categories query
       if(isCategory)
         parameters.category_filter = search;
       else
         parameters.term = search;
-      if(longitude && latitude) {
-        parameters.latitude = latitude;
-        parameters.longitude = longitude;
-      }
+
+      // Set location if available
+      if(longitude && latitude)
+        parameters.ll = latitude + ',' + longitude;
+      else
+        parameters.location = 'San+Francisco';
       parameters.limit = 5;
-      parameters.location = near;
-      // parameters.push(['callback', 'cb']);
+
+      // Configure OAUTH parameters for REST call
       parameters.oauth_consumer_key = auth.consumerKey;
       parameters.oauth_consumer_secret = auth.consumerSecret;
       parameters.oauth_token = auth.accessToken;
@@ -385,10 +367,8 @@ Meteor.startup(function () {
       oauthBinding.accessTokenSecret = auth.accessTokenSecret;
       var headers = oauthBinding._buildHeader();
 
-      console.log('params: ', parameters);
-
+      // console.log('params: ', parameters);
       return oauthBinding._call('GET', 'http://api.yelp.com/v2/search', headers, parameters).data;
-
     }
   });
 });

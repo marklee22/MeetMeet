@@ -11,8 +11,11 @@ Deps.autorun(function() {
       Session.set('meetingRequest', meetings.shift());
       Session.set('meetings', meetings);
 
-      Meteor.call('yelpQuery', 'bars', true, function(err, results) {
-        Session.set('yelpPlaces', results.businesses);
+      Meteor.call('getLocation', function(err, location) {
+        console.log(location.loc);
+        Meteor.call('yelpQuery', 'bars', true, location.loc[0], location.loc[1], function(err, results) {
+          Session.set('yelpPlaces', results.businesses);
+        });
       });
     }
   }
@@ -58,6 +61,13 @@ var mapInitialize = function() {
         var position = new google.maps.LatLng(item.loc[1], item.loc[0]);
         setTimeout(placeMarker(position), 500);
       });
+
+      if(Session.get('yelpPlaces')) {
+        _.each(Session.get('yelpPlaces'), function(place) {
+          var location = new google.maps.LatLng(place.location.coordinate.latitude, place.location.coordinate.longitude);
+          placeMarker(location, 'bar');
+        });
+      }
     });
 
     }, function() {
@@ -69,13 +79,24 @@ var mapInitialize = function() {
   }
 };
 
-var placeMarker = function(location) {
-  Meteor.call('setLocation', location.lng(), location.lat());
+var placeMarker = function(location, type) {
+  // Meteor.call('setLocation', location.lng(), location.lat());
   var marker = new google.maps.Marker({
     position: location,
     animation: google.maps.Animation.DROP,
     map: map
   });
+
+  var icon;
+  switch(type) {
+    case 'bar':
+      icon = 'http://maps.google.com/mapfiles/ms/micons/bar.png';
+      break;
+    default:
+      icon = 'http://maps.google.com/mapfiles/marker.png';
+  }
+  console.log(icon);
+  marker.setIcon(icon);
 };
 
 function handleNoGeolocation(errorFlag) {
