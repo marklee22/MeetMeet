@@ -1,11 +1,6 @@
 <head>
   <title>friendster</title>
-      <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-        html { height: 100% }
-        body { height: 100%; margin: 0; padding: 0 }
-        #map-canvas { height: 400px; }
-    </style>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
   <script src="https://apis.google.com/js/client.js"></script>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places&key=AIzaSyACRc-SGQocyxZCNH1w5MIf_URgor_Tf4A&sensor=true"></script>
   <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
@@ -29,13 +24,26 @@
 <template name="main_page">
   <div class="row-fluid">
     <div class="span10 offset1">
-      <div class="events">
+      {{#if new_meeting}}
+      <div class="current-meeting span4">
+        <h4 class="text-center">New Meeting!</h4>
+        <div class="meeting span6 offset3">
+          {{> meeting new_meeting}}
+          <div class="text-center">
+            <button class="btn btn-mini btn-success" id="acceptMeeting">Accept</button>
+            <button class="btn btn-mini btn-danger" id="declineMeeting">Decline</button>
+          </div>
+        </div>
+      </div>
+      {{/if}}
+      {{#if new_meeting}}
+      <div class="map span8">
+      {{else}}
+      <div class="map span12">
+      {{/if}}
         {{#constant}}
         <div id="map-canvas"></div>
         {{/constant}}
-        <button id="showUsers">Show Users</button>
-        <button id="getMutualTime">Get Mutual Times</button>
-        <button id="testButton">Test Button!</button>
         {{> meetings}}
       </div>
     </div>
@@ -43,31 +51,22 @@
 </template>
 
 <template name="meetings">
-  <h4>Meetings</h4>
-  <div class="meetings">
-    <div class="current-meeting span6">
-      {{#if new_meeting}}
-      <h3>New Meeting!</h3>
-      {{> meeting new_meeting}}
-      <button id="acceptMeeting">Accept</button>
-      <button id="declineMeeting">Decline</button>
-      {{else}}
-      <h3>No new meetings yet...</h3>
-      {{/if}}
-    </div>
-    <div class="meeting-history span6">
-      <h3>Meeting History</h3>
-      {{#each meetings}}
+  <div class="meeting-history span11 offset1">
+    <h3 class="text-center">Meeting History</h3>
+    {{#each meetings}}
+      <div class="meeting span3">
         {{> meeting}}
-      {{/each}}
-    </div>
+      </div>
+    {{/each}}
   </div>
 </template>
 
 <template name="meeting">
-  <div class="meeting">
-    <span class="meeting-date">{{format_time start end}}:</span>
-      <span>Meeting with <strong>{{lookup_user_name users}}</strong></span>
-    <img src="https://graph.facebook.com/{{lookup_user_id users}}/picture"/>
+  <div class="meeting-month">{{getMonth start}}</div>
+  <div class="meeting-day">{{getDay start}}</div>
+  <div class="meeting-time">{{formatTime start end}}</div>
+  <div class="meeting-profilePic">
+    <img src="https://graph.facebook.com/{{lookupUserId users}}/picture"/>
   </div>
+  <div class="meeting-profileName">{{lookupUserName users}}</div>
 </template>

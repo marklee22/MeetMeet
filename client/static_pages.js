@@ -23,6 +23,11 @@ Meteor.Router.filters({
     } else {
       return 'splash_page';
     }
+  },
+
+  // Redirect to home if signed up or signing in
+  'redirectToHome': function(page) {
+
   }
 });
 

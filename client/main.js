@@ -21,7 +21,7 @@ var map;
 
 var mapInitialize = function() {
   var mapOptions = {
-    zoom: 15,
+    zoom: 14,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -101,10 +101,6 @@ Template.main_page.rendered = function() {
 };
 
 Template.main_page.events({
-  'click #showUsers': function() {
-    console.log('showUsers clicked');
-  },
-
   'click #getMutualTime': function() {
     console.log('getting mutual times');
     Meteor.call('getMutualTimes', 'Jxdmr2T4thi2GpJZw', 'tAMYpwWKYbHjXbiEa', function(err, results) {
@@ -121,7 +117,7 @@ Template.main_page.events({
 *** MEETINGS PAGE ***
 ********************/
 
-Template.meetings.new_meeting = function() {
+Template.main_page.new_meeting = function() {
   if(Session.get('meetingRequest'))
     return Session.get('meetingRequest');
   else
@@ -132,21 +128,30 @@ Template.meetings.meetings = function() {
   return Session.get('meetings');
 };
 
-Template.meeting.format_time = function(start, end) {
-  start = moment.unix(start);
-  end = moment.unix(end);
+/**************
+*** MEETING ***
+**************/
 
-  return start.format('MMM D - ') + start.format('h:mm A') + ' - ' + end.format('h:mm A');
+Template.meeting.getMonth = function(start) {
+  return moment.unix(start).format('MMMM');
 };
 
-Template.meeting.lookup_user_name = function(users) {
+Template.meeting.getDay = function(start) {
+  return moment.unix(start).format('D');
+};
+
+Template.meeting.formatTime = function(start, end) {
+  return moment.unix(start).format('h:mm A') + ' - ' + moment.unix(end).format('h:mm A');
+};
+
+Template.meeting.lookupUserName = function(users) {
   var friend = _.filter(users, function(user) {
     return user.id !== Meteor.userId();
   });
   return friend[0].name;
 };
 
-Template.meeting.lookup_user_id = function(users) {
+Template.meeting.lookupUserId = function(users) {
   var friend = _.filter(users, function(user) {
     return user.id !== Meteor.userId();
   });
