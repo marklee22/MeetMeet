@@ -80,14 +80,6 @@ Template.alert.events({
 *** USER SETTINGS ***
 *********************/
 
-Template.settings_page.isComplete = function() {
-  if(Meteor.user().services.facebook && Meteor.user().services.google) {
-    Meteor.call('userSettingsComplete');
-    Meteor.Router.to('/friends');
-  }
-  return false;
-};
-
 Template.settings_page.selectCalendars = function() {
   return Session.get('selectCalendars');
 };

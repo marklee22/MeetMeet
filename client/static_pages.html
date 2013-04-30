@@ -95,25 +95,19 @@
 <template name="settings_page">
   <div class="row-fluid">
     <div class="span10 offset1">
-      {{#if isComplete}}
-        <h2 class="text-center">"Welcome to...Jurassic Park"</h2>
-        <img class="text-center" src="http://27.media.tumblr.com/dDgavs3dkqknze8iUeFMxn4no1_500.gif"/>
-        <button class="btn btn-primary btn-large" id="settings-finish">Finished!</button>
+      {{#if selectCalendars}}
+        <div class="settings-panel">
+          {{> select_calendars}}
+        </div>
       {{else}}
-        {{#if selectCalendars}}
-          <div class="settings-panel">
-            {{> select_calendars}}
-          </div>
-        {{else}}
-          <h4 class="text-center">Sync Calendars</h4>
-          <div class="settings-panel">
-            {{> calendar_prefs}}
-          </div>
-          <h4 class="text-center">Sync Friends</h4>
-          <div class="settings-panel">
-            {{> friend_prefs}}
-          </div>
-        {{/if}}
+        <h4 class="text-center">Sync Calendars</h4>
+        <div class="settings-panel">
+          {{> calendar_prefs}}
+        </div>
+        <h4 class="text-center">Sync Friends</h4>
+        <div class="settings-panel">
+          {{> friend_prefs}}
+        </div>
       {{/if}}
     </div>
   </div>

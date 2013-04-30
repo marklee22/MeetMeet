@@ -21,8 +21,7 @@ Template.signin_page.events({
     // console.log($('#inputEmail').val(), $('#inputPassword').val());
     Meteor.loginWithPassword($('#inputEmail').val(), $('#inputPassword').val(), function(err) {
       if(err) {
-        Session.set('alert', err);
-        console.log(err);
+        Session.set('alert', {class: 'alert-error', type:'ERROR', msg: err});
       }
     });
   }
@@ -54,6 +53,11 @@ Template.signin_button.events({
 
   'click .signout-button': function(e) {
     e.preventDefault();
+
+    // Remove all Session variables
+    _.each(Session.keys, function(value, key) {
+      Session.set(key, undefined);
+    });
     Meteor.logout();
   }
 });

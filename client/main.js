@@ -12,9 +12,9 @@ Deps.autorun(function() {
       Session.set('meetings', meetings);
 
       Meteor.call('getLocation', function(err, location) {
-        Meteor.call('yelpQuery', 'bars', true, location.loc[0], location.loc[1], function(err, results) {
-          Session.set('yelpPlaces', results.businesses);
-        });
+        // Meteor.call('yelpQuery', 'bars', true, location.loc[0], location.loc[1], function(err, results) {
+          // Session.set('yelpPlaces', results.businesses);
+        // });
       });
     }
   }
