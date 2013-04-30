@@ -1,40 +1,33 @@
 <template name="friends_page">
   <div class="row-fluid">
     <div class="span10 offset1 text-center">
-      <div class="friend-preferences text-center">
-        <div/>
-      {{#if showInstructions}}
-        <div class="span6 offset3">
-          <button class="btn btn-inverse hideFriendPrefs" id="hideFriendPrefs">Hide Instructions</button>
-        </div>
-        <div class="friend-instructions span6 offset3 text-center">
-          <h4>Step 1:</h4><strong> Import Facebook Friends</strong>
-          <div>
-            <button class="btn btn-info fbook getFriends">Get Facebook Friends</button>
-          </div>
-          <h4>Step 2:</h4><strong> Select friends to meet!</strong>
-          <div class="display-buttons">
-            <button class="btn btn-mini btn-success">Will Meet!</button>
-            <button class="btn btn-mini btn-danger">No Meet!</button>
-          </div>
-          <div>
-        </div>
-      {{else}}
-        <div class="span6 offset3">
-          <button class="btn btn-primary showFriendPrefs text-center" id="showFriendPrefs">Show Instructions</button>
-        </div>
-      {{/if}}
+      <div class="friend-preferences">
+        <button class="btn btn-info fbook getFriends">Sync Facebook Friends</button>
       </div>
-    <div class="span12">
-      <div class="friendSlider btn-group">
-        {{#each letters}}
-          <button class="btn btn-inverse letter" id="letter-{{letter}}">{{letter}}</button>
-        {{/each}}
+      <div class="span12">
+        <div class="friendSlider btn-group">
+          {{#each letters}}
+            <button class="btn btn-inverse letter" id="letter-{{letter}}">{{letter}}</button>
+          {{/each}}
+        </div>
+        {{> fbookFriends}}
       </div>
-      {{> fbookFriends}}
     </div>
   </div>
-</div>
+</template>
+
+<template name="friend_prefs">
+  <div class="friend-instructions span6 offset3 text-center">
+    <h4>Step 1:</h4><strong> Import Facebook Friends</strong>
+    <div>
+      <button class="btn btn-info fbook getFriends">Get Facebook Friends</button>
+    </div>
+    <h4>Step 2:</h4><strong> Select friends to meet!</strong>
+    <div class="display-buttons">
+      <button class="btn btn-mini btn-success">Will Meet!</button>
+      <button class="btn btn-mini btn-danger">No Meet!</button>
+    </div>
+  </div>
 </template>
 
 <template name="fbookFriends">

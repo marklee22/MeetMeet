@@ -10,11 +10,11 @@ Meteor.autosubscribe(function () {
 
 Deps.autorun(function() {
   if(Meteor.user()) {
-    var calendars = Calendars.find({}).fetch();
-    var events = Events.find({}).fetch();
+    var calendars = Calendars.find({}).fetch() || [];
+    var events = Events.find({}).fetch() || [];
     Session.set('dayPrefs', Meteor.user().days || []);
     Session.set('eventPrefs', Meteor.user().events || []);
-    if(calendars) {
+    if(calendars.length > 0) {
       Session.set('hasCalendars', true);
       Session.set('gCalendars', calendars);
     }
@@ -74,7 +74,7 @@ Template.full_calendar.rendered = function() {
       return newEvent;
     },
     eventRender: function(event, element, view) {
-      var node = $('<div class="close"></div>').on('click', function() {
+      var node = $('<div class="cal-close"></div>').on('click', function() {
         Meteor.call('deleteEvent', event.id);
         $cal.fullCalendar('removeEventSource', event.source);
       });
@@ -116,6 +116,25 @@ Template.full_calendar.events({
 /****************************
 *** GOOGLE CALENDAR FUNCS ***
 ****************************/
+
+/** Add the Google account to the user's Meteor account **/
+var addGoogleAccount = function() {
+  Meteor.loginWithGoogle({
+    requestPermissions: [
+      'https://www.googleapis.com/auth/calendar',
+      'https://www.googleapis.com/auth/userinfo.email'
+    ]
+  }, function(err) {
+    if(err) {
+      if(err.error === 205) {
+        Session.set('alert', {class: 'alert-success', type: 'SUCCESS', msg: 'Added Google Calendar'});
+        gCalendarInit(getAllCalendars);
+      }
+      else
+        Session.set('alert', {class: 'alert-error', type: 'ERROR', msg: err.reason});
+    }
+  });
+};
 
 /** Handler for getAllCalendars HTTP request **/
 var handleCalendarResponse = function(err, data) {
@@ -310,7 +329,10 @@ Template.calendar_prefs.events({
   },
 
   'click .getCalendars': function() {
-    gCalendarInit(getAllCalendars);
+    if(Meteor.user().services.google)
+      gCalendarInit(getAllCalendars);
+    else
+      addGoogleAccount();
   },
 
   'click .getEvents': function() {

@@ -369,6 +369,10 @@ Meteor.startup(function () {
 
       // console.log('params: ', parameters);
       return oauthBinding._call('GET', 'http://api.yelp.com/v2/search', headers, parameters).data;
+    },
+
+    userSettingsComplete: function() {
+      Meteor.users.update({_id: this.userId}, {$set: {isNewUser: false}});
     }
   });
 });

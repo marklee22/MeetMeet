@@ -28,7 +28,6 @@ var handleFbookFriendsResponse = function(err, data) {
   if(err) console.log('fbook friend err: ', err);
 
   var friends = data.data.data;
-  console.log(friends);
   Meteor.call('insertFriends', friends, function(err, result) {
     if(err) console.log('setFriends err: ', err);
   });
@@ -41,6 +40,17 @@ var getFbookFriends = function(params) {
   var url = 'https://graph.facebook.com/me/friends';
 
   Meteor.http.get(url, {params: params}, handleFbookFriendsResponse);
+};
+
+var addFbookAccount = function() {
+  Meteor.loginWithFacebook({}, function(err) {
+    if(err)
+      if(err.error === 205) {
+        Session.set('alert', {class: 'alert-success', type:'SUCCESS', msg: 'Added Facebook account!'});
+        fbookInit(getFbookFriends);
+      } else
+        Session.set('alert', {class: 'alert-error', type:'ERROR', msg: err.reason});
+  });
 };
 
 var fbookInit = function(func) {
@@ -72,10 +82,6 @@ Template.friends_page.showInstructions = function() {
 };
 
 Template.friends_page.events({
-  'click button.fbook.getFriends': function() {
-    fbookInit(getFbookFriends);
-  },
-
   'click .friendSlider button': function(e) {
     $('button.letter').removeClass('btn-primary');
     $('button.letter').addClass('btn-inverse');
@@ -90,13 +96,27 @@ Template.friends_page.events({
 
   'click #showFriendPrefs': function() {
     Session.set('showFriendPrefs', true);
+  },
+
+  'click .getFriends': function() {
+    if(Meteor.user().services.facebook)
+      fbookInit(getFbookFriends);
+    else
+      addFbookAccount();
+  }
+});
+
+Template.friend_prefs.events({
+  'click .getFriends': function() {
+    if(Meteor.user().services.facebook)
+      fbookInit(getFbookFriends);
+    else
+      addFbookAccount();
   }
 });
 
 Template.friend.events({
  'click .friend-select': function(e) {
-    console.log(e.target);
-
     // Check if changing from true or false
     var status = $(e.target).hasClass('btn-success') ? false : true;
 

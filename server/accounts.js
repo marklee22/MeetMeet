@@ -1,9 +1,10 @@
 Accounts.onCreateUser(function(options, user) {
-  console.log(options, user);
+  console.log('New User: ', options, user);
   // if(options.services && options.services.google && options.services.google.email)
     // if(Meteor.users.find({'emails.address': options.services.google.email}))
   if(options.profile)
     user.profile = options.profile;
+  user.isNewUser = true;
   return user;
 });
 
@@ -12,6 +13,7 @@ Accounts.config({
 });
 
 Accounts.validateNewUser(function (user) {
+  console.log('Validating new user: ', user);
   var service = user.services.google || user.services.facebook;
 
   if (! service)

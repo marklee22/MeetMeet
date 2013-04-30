@@ -1,3 +1,44 @@
+<head>
+  <title>friendster</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <script src="https://apis.google.com/js/client.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places&key=AIzaSyACRc-SGQocyxZCNH1w5MIf_URgor_Tf4A&sensor=true"></script>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+</head>
+
+<body>
+  {{> header}}
+  <div class="container-fluid">
+    <div class="main-content">
+      {{> alert}}
+      {{renderPage}}
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      {{> footer}}
+    </div>
+  </div>
+</body>
+
+<template name="alert">
+  <div class="row-fluid">
+    <div class="span8 offset2">
+      {{#if alertMsg}}
+        {{> alert_msg alertMsg}}
+      {{/if}}
+    </div>
+  </div>
+</template>
+
+<template name="alert_msg">
+  <div class="alert {{class}}">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>{{type}}:</strong> {{msg}}
+  </div>
+</template>
+
 <template name="header">
   <div class="navbar header navbar-inverse">
     <div class="navbar-inner">
@@ -47,6 +88,33 @@
         <a class="btn btn-large btn-success" href="/signup">Sign up today</a>
         <a class="btn btn-large btn-info" href="/FAQ">How It Works</a>
       </div>
+    </div>
+  </div>
+</template>
+
+<template name="settings_page">
+  <div class="row-fluid">
+    <div class="span10 offset1">
+      {{#if isComplete}}
+        <h2 class="text-center">"Welcome to...Jurassic Park"</h2>
+        <img class="text-center" src="http://27.media.tumblr.com/dDgavs3dkqknze8iUeFMxn4no1_500.gif"/>
+        <button class="btn btn-primary btn-large" id="settings-finish">Finished!</button>
+      {{else}}
+        {{#if selectCalendars}}
+          <div class="settings-panel">
+            {{> select_calendars}}
+          </div>
+        {{else}}
+          <h4 class="text-center">Sync Calendars</h4>
+          <div class="settings-panel">
+            {{> calendar_prefs}}
+          </div>
+          <h4 class="text-center">Sync Friends</h4>
+          <div class="settings-panel">
+            {{> friend_prefs}}
+          </div>
+        {{/if}}
+      {{/if}}
     </div>
   </div>
 </template>
