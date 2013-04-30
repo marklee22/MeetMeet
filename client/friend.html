@@ -49,12 +49,15 @@
 <template name="friend">
   <div class="friend {{#if isSelected}}selected{{/if}} span2">
     <div>
+      {{#if isSelected}}
+        <div class="checkmark">&#10003;</div>
+      {{/if}}
       <img src="https://graph.facebook.com/{{id}}/picture?type=normal"/>
     </div>
-    <div>
+    <div class="friend-name">
       <strong>{{name}}</strong>
     </div>
-    <div class="span12">
+    <div class="span12 friend-button">
       <button class="friend-select btn btn-mini {{#if isSelected}}btn-success{{else}}btn-danger{{/if}}">{{#if isSelected}}Will Meet!{{else}}No Meet!{{/if}}</button>
     </div>
   </div>

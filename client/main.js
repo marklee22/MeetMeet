@@ -12,7 +12,6 @@ Deps.autorun(function() {
       Session.set('meetings', meetings);
 
       Meteor.call('getLocation', function(err, location) {
-        console.log(location.loc);
         Meteor.call('yelpQuery', 'bars', true, location.loc[0], location.loc[1], function(err, results) {
           Session.set('yelpPlaces', results.businesses);
         });
@@ -95,7 +94,6 @@ var placeMarker = function(location, type) {
     default:
       icon = 'http://maps.google.com/mapfiles/marker.png';
   }
-  console.log(icon);
   marker.setIcon(icon);
 };
 
