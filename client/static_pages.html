@@ -1,5 +1,5 @@
 <head>
-  <title>friendster</title>
+  <title>MeetMeet</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
   <script src="https://apis.google.com/js/client.js"></script>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places&key=AIzaSyACRc-SGQocyxZCNH1w5MIf_URgor_Tf4A&sensor=true"></script>
@@ -108,6 +108,9 @@
         <div class="settings-panel">
           {{> friend_prefs}}
         </div>
+        <div class="userPref-complete">
+          <button class="btn btn-primary btn-large" id="settingsComplete">Complete</button>
+        </div>
       {{/if}}
     </div>
   </div>
@@ -116,28 +119,47 @@
 <template name="faq_page">
   <div class="row-fluid">
     <div class="span8 offset2">
-      <h4>How it Works</h4>
+      <h4 class="text-center">How it Works</h4>
       <dl class="faq">
         <dt>Create an account</dt>
-        <dd>[Screenshot of step]</dd>
+        <dd><img src="/images/faq/splash.png"></dd>
 
-        <dt>Add Facebook and Google Calendar access</dt>
-        <dd>[Screenshot of step]</dd>
+        <dt>Add Google Calendar access</dt>
+        <dd><img src="/images/faq/calendars.png"></dd>
 
-        <dt>Download/Sync your Google Calendar</dt>
-        <dd>[Screenshot of step]</dd>
+        <dt>Choose your Meeting Day and Type Preferences</dt>
+        <dd><img src="/images/faq/calPrefs.png"></dd>
 
-        <dt>Select friends you'd dtke to meet</dt>
-        <dd>[Screenshot of step]</dd>
+        <dt>Import your Facebook friends</dt>
+        <dd><img src="/images/faq/friends.png"></dd>
 
-        <dt>Friendster will find mutual friends who want to meet and setup meetings between you two!</dt>
-        <dd>[Screenshot of step]</dd>
+        <dt>Select the friends you'd want to meet</dt>
+        <dd><img src="/images/faq/friendSelect.png"></dd>
+
+        <dt>MeetMeet will automatically setup events for you and your friend when you're both free!</dt>
+        <dd><img src="/images/faq/meetings.png"></dd>
       </dl>
 
-      <h4>FAQ</h4>
+      <h4 class="text-center">FAQ</h4>
       <dl class="faq">
         <dt>Do I need Facebook and Google Calendar?</dt>
-        <dd>[Explanation]</dd>
+        <dd>Yes. Google Calendar and Facebook Friend access is required for this app to work.</dd>
+        <dt>Do my friends get notified if I want to meet with them?</dt>
+        <dd>No. The system is mutually anonymous meaning a friend will never know if you accepted or rejected to meet them.</dd>
+        <dt>If I decline a meeting, will it notify my friend?</dt>
+        <dd>Nope. But he/she will know you both mutually want to meet now, so the secret is out.</dd>
+        <dt>Why is the website broken?</dt>
+        <dd>There are a few bugs to work out and the website is still in an alpha stage. Some things that don't work <strong>yet</strong>.
+          <ul>
+            <li>No email notifications</li>
+            <li>No password recovery</li>
+            <li>Accept/Decline meetings</li>
+            <li>Writing meetings back to Google Calendar</li>
+            <li>Manual meeting requests between two friends</li>
+            <li>Group meeting support</li>
+          </ul>
+          Eventually I will get around to implementing these features, so check back soon.
+        </dd>
       </dl>
     </div>
   </div>

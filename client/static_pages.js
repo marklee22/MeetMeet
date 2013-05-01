@@ -76,6 +76,17 @@ Template.alert.events({
   }
 });
 
+/**********
+*** FAQ ***
+**********/
+
+Template.faq_page.events({
+  'click dt': function(e) {
+    console.log(e.target);
+    $(e.target).next().toggleClass().slideToggle();
+  }
+});
+
 /*********************
 *** USER SETTINGS ***
 *********************/
@@ -102,5 +113,14 @@ Template.settings_page.events({
 
     // Done selecting calendars
     Session.set('selectCalendars', false);
+  },
+
+  'click #settingsComplete': function(e) {
+    e.preventDefault();
+    if(Meteor.user().services.facebook && Meteor.user().services.google) {
+      Meteor.call('userSettingsComplete');
+      Meteor.Router.to('/friends');
+    } else
+      Session.set('alert', {class: 'alert-error', type: 'Required', msg: 'Please register BOTH Google and Facebook account to proceed'});
   }
 });
