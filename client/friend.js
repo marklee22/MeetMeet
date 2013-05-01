@@ -5,8 +5,9 @@ Deps.autorun(function() {
     if(!Session.get('friendListLetter')) {
       Session.set('friendListLetter', 'A');
     }
-    var friends = Friends.findOne({}).friendsList;
+    var friends = Friends.findOne({});
     if(friends) {
+      friends = friends.friendsList;
       friends = _.sortBy(friends, function(friend) {
         return friend.name;
       });
@@ -31,6 +32,7 @@ var handleFbookFriendsResponse = function(err, data) {
   Meteor.call('insertFriends', friends, function(err, result) {
     if(err) console.log('setFriends err: ', err);
   });
+  console.log(friends);
 
   Session.set('select_friends', true);
   Session.set('friends', friends);
@@ -47,7 +49,10 @@ var addFbookAccount = function() {
     if(err)
       if(err.error === 205) {
         Session.set('alert', {class: 'alert-success', type:'SUCCESS', msg: 'Added Facebook account!'});
-        fbookInit(getFbookFriends);
+        var params = {
+          access_token: Meteor.user().services.facebook.accessToken
+        };
+        getFbookFriends(params);
       } else
         Session.set('alert', {class: 'alert-error', type:'ERROR', msg: err.reason});
   });
