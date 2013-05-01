@@ -198,4 +198,4 @@ var _createMeeting = function(userId, friendId, start, end) {
 };
 
 // Run cronjob every 5 minutes
-Meteor.setInterval(_scheduleMeetings, 300000);
+Meteor.setInterval(_scheduleMeetings, 30000);
