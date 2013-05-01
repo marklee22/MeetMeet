@@ -38,7 +38,6 @@ Template.signin_button.title = function() {
 Template.signin_button.events({
   'click a.dropdown-toggle': function(e) {
     $(e.target).closest('li.dropdown').toggleClass('open');
-    console.log(e.target);
   },
 
   'click .signin-button': function(e) {

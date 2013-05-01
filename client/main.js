@@ -7,14 +7,15 @@ Deps.autorun(function() {
     var meetings = Meetings.find({});
     if(meetings.count() > 0) {
       meetings = meetings.fetch();
-      _.sortBy(meetings, function(mtg) { return -mtg.start; });
-      Session.set('meetingRequest', meetings.shift());
-      Session.set('meetings', meetings);
+      var newMeeting = _.filter(meetings, function(mtg) { return !mtg.isExpired; }) || '';
+      var meetingHistory = _.filter(meetings, function(mtg) { return mtg.isExpired; }) || '';
+      Session.set('meetingRequest', newMeeting[0]);
+      Session.set('meetings', meetingHistory);
 
       Meteor.call('getLocation', function(err, location) {
-        // Meteor.call('yelpQuery', 'bars', true, location.loc[0], location.loc[1], function(err, results) {
-          // Session.set('yelpPlaces', results.businesses);
-        // });
+        Meteor.call('yelpQuery', 'bars', true, location.loc[0], location.loc[1], function(err, results) {
+          Session.set('yelpPlaces', results.businesses);
+        });
       });
     }
   }
@@ -137,19 +138,6 @@ Template.place.all_cats = function(categories) {
     return cat.toUpperCase();
   }).join(', ');
 };
-
-Template.main_page.events({
-  'click #getMutualTime': function() {
-    console.log('getting mutual times');
-    Meteor.call('getMutualTimes', 'Jxdmr2T4thi2GpJZw', 'tAMYpwWKYbHjXbiEa', function(err, results) {
-      console.log(results);
-    });
-  },
-
-  'click #testButton': function() {
-    Meteor.call('testMeeting');
-  }
-});
 
 /********************
 *** MEETINGS PAGE ***

@@ -177,7 +177,8 @@ Meteor.startup(function () {
       console.log('Setting user: ' + this.userId + ' (longitude, latitude): (' + lng + ',' + lat +')');
       Locations.update({userId: this.userId}, {
         $set: {
-          loc: [lng, lat]
+          loc: [lng, lat],
+          updatedAt: moment().unix()
         }
       }, {upsert: true});
     },

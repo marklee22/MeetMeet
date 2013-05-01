@@ -4,6 +4,10 @@ body{
   background:#f4f8f9;
 }
 
+.navbar-inner {
+  border-radius: 0;
+}
+
 #map-canvas img {
   max-width: inherit;
 }
@@ -27,6 +31,7 @@ body{
 
 div.main-content {
   min-height: 400px;
+  margin-top: -20px;
 }
 
 button.gCal {
@@ -38,6 +43,11 @@ button.gCal {
 .settings-panel {
   margin-top: 15px;
   margin-bottom: 15px;
+}
+
+.userPref-complete {
+  clear: both;
+  text-align: center;
 }
 
 /* Header */
@@ -60,6 +70,7 @@ button.gCal {
 
 .dropdown-menu .signin-input, .dropdown-menu label {
   margin-left: 10px;
+  margin-right: 10px;
   width: 156px;
 }
 
@@ -105,6 +116,19 @@ div.footer li a {
   color: rgb(40, 119, 192);
 }
 
+/* Signup */
+.signup {
+  border: 1px solid rgba(0,0,0,0.3);
+  padding-top: 8px;
+  margin-right: 15px;
+  border-radius: 7px;
+  background: white;
+  box-shadow: inset 1px 1px 6px rgba(0,0,0,0.25);
+  .control-label {
+    font-weight: bold;
+  }
+}
+
 /* About */
 .about, .about li {
   font-size: 16px;
@@ -139,15 +163,33 @@ div.footer li a {
 /* FAQ */
 .faq {
   counter-reset: my-badass-counter;
+  dt {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  dd {
+    display: none;
+    color: red;
+    padding-left: 24px;
+    img {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      border-radius: 7px;
+      background: white;
+      box-shadow: inset 1px 1px 6px rgba(0,0,0,0.25);
+    }
+  }
 }
 
 .faq dt:before {
   content: counter(my-badass-counter);
   counter-increment: my-badass-counter;
-  background-color: gray;
-  width: 10px;
-  height: 10px;
-  color: white;
+  width: 20px;
+  height: 20px;
+  color: rgba(0, 0, 0, 0.65);
+  padding-right: 20px;
+  font-size: 25px;
 }
 
 .faq .counter {
@@ -371,9 +413,12 @@ button.getFriends {
 
 /* Main Page */
 #map-canvas {
-  height: 400px;
-  border: 2px solid black;
+  height: 450px;
   border-radius: 5px;
+  margin-top: -30px;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
 }
 
 .meeting-history {
