@@ -7,8 +7,12 @@
         <div class="meeting span6 offset3">
           {{> meeting new_meeting}}
           <div class="text-center">
+            {{#if meetingActionTaken}}
+              <span class="meeting-status {{meetingClass meetingActionTaken}}">{{meetingActionTaken}}</span>
+            {{else}}
             <button class="btn btn-mini btn-success" id="acceptMeeting">Accept</button>
             <button class="btn btn-mini btn-danger" id="declineMeeting">Decline</button>
+            {{/if}}
           </div>
         </div>
         <div class="places span12">

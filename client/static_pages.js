@@ -47,12 +47,18 @@ Meteor.Router.filters({
   'clearAlert': function(page) {
     Session.set('alert', undefined);
     return page;
+  },
+
+  'clearSession': function(page) {
+    Session.set('meetingActionTaken', '');
+    return page;
   }
 });
 
 Meteor.Router.filter('clearAlert', {except: ['settings_page']});
 Meteor.Router.filter('checkLoggedIn', {only: ['main_page', 'friends_page', 'calendar_page']});
 Meteor.Router.filter('newUser', {only: ['main_page', 'friends_page', 'calendar_page']});
+Meteor.Router.filter('clearSession');
 
 /********************
 *** HEADER/FOOTER ***

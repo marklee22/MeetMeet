@@ -139,6 +139,27 @@ Template.place.all_cats = function(categories) {
   }).join(', ');
 };
 
+Template.main_page.meetingActionTaken = function() {
+  return Session.get('meetingActionTaken');
+};
+
+Template.main_page.meetingClass = function(meeting) {
+  if(meeting === 'Accepted')
+    return 'text-success';
+  else
+    return 'text-error';
+};
+
+Template.main_page.events({
+  'click #acceptMeeting': function() {
+    Session.set('meetingActionTaken', 'Accepted');
+  },
+
+  'click #declineMeeting': function() {
+    Session.set('meetingActionTaken', 'Declined');
+  }
+});
+
 /********************
 *** MEETINGS PAGE ***
 ********************/
