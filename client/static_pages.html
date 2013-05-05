@@ -2,7 +2,7 @@
   <title>MeetMeet</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
   <script src="https://apis.google.com/js/client.js"></script>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places&key=AIzaSyACRc-SGQocyxZCNH1w5MIf_URgor_Tf4A&sensor=true"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places&key=AIzaSyBvNqIZwvG7nVfphTeJXQOdy7c-k1I3CnM&sensor=true"></script>
   <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
 </head>
@@ -40,26 +40,32 @@
 </template>
 
 <template name="header">
-  <div class="navbar header navbar-inverse">
-    <div class="navbar-inner">
-      <div class="span2 offset1">
-        <a class="brand" href="/splash">MeetMeet!</a>
+  <div class="container-fluid header">
+    <div class="row-fluid">
+      <div class="navbar header navbar-inverse navbar-static-top">
+        <div class="navbar-inner">
+          <div class="span2 offset1">
+            <a class="brand" href="/splash">MeetMeet!</a>
+          </div>
+          <div class="span6 row-fluid">
+            <ul class="nav span12">
+              {{#if user}}
+              <li class="span3"><a href="/">Home</a></li>
+              <li class="span3"><a href="/calendar">Calendar</a></li>
+              <li class="span3"><a href="/friends">Friends</a></li>
+              <li class="span3"><a href="/FAQ">How it Works</a></li>
+              {{/if}}
+            </ul>
+          </div>
+          <div class="span2 pull-right row-fluid">
+            <div class="span8">
+              {{> signin_button}}
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="span8">
-      <ul class="nav">
-        {{#if user}}
-        <li class="span2"><a href="/">Home</a></li>
-        <li class="span2"><a href="/calendar">Calendar</a></li>
-        <li class="span2"><a href="/friends">Friends</a></li>
-        <li class="span2"><a href="/FAQ">How it Works</a></li>
-        {{/if}}
-      </ul>
-    </div>
-    <div class="span2">
-      {{> signin_button}}
     </div>
   </div>
-</div>
 </template>
 
 <template name="footer">
