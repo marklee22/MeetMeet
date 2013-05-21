@@ -88,7 +88,6 @@ Template.alert.events({
 
 Template.faq_page.events({
   'click dt': function(e) {
-    console.log(e.target);
     $(e.target).next().toggleClass().slideToggle();
   }
 });

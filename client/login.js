@@ -42,12 +42,7 @@ Template.signin_button.events({
 
   'click .signin-button': function(e) {
     e.preventDefault();
-    Meteor.loginWithPassword($('#signin-email').val(), $('#signin-password').val(), function(err) {
-      if(err) {
-        Session.set('alert', err);
-        console.log(err);
-      }
-    });
+    signIn();
   },
 
   'click .signout-button': function(e) {
@@ -58,8 +53,27 @@ Template.signin_button.events({
       Session.set(key, undefined);
     });
     Meteor.logout();
+  },
+
+  'keypress #signin-password': function(e) {
+    if(e.which === 13)
+      signIn();
   }
 });
+
+/**************
+*** SIGN IN ***
+**************/
+
+var signIn = function() {
+  Meteor.loginWithPassword($('#signin-email').val(), $('#signin-password').val(), function(err) {
+    if(err) {
+      $('.alert').remove();
+      $('#signin-form').prepend('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' +
+       err.reason + '</div>');
+    }
+  });
+};
 
 /**************
 *** SIGN UP ***
