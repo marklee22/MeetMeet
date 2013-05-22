@@ -32,7 +32,6 @@ var handleFbookFriendsResponse = function(err, data) {
   Meteor.call('insertFriends', friends, function(err, result) {
     if(err) console.log('setFriends err: ', err);
   });
-  console.log(friends);
 
   Session.set('select_friends', true);
   Session.set('friends', friends);
