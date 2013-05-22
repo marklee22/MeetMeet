@@ -12,7 +12,30 @@ Deps.autorun(function() {
       Session.set('meetingRequest', newMeeting[0]);
       Session.set('meetings', meetingHistory);
 
+      // Determine users' meeting choices
+      var currUser = _.filter(newMeeting[0].users, function(user) { return user.id === Meteor.user()._id; })[0];
+      var friend = _.filter(newMeeting[0].users, function(user) { return user.id !== Meteor.user()._id; })[0];
+
+      if(currUser.status === 1 && friend.status === 1)
+        Session.set('meetingActionTaken', 'Both Accepted!');
+      else {
+        if(currUser.status === 1)
+          Session.set('meetingActionTaken', 'Accepted');
+        else if(currUser.status === 2)
+          Session.set('meetingActionTaken', 'Declined');
+
+        if(friend.status !== 0) {
+          // Notify user that friend is waiting for a reply
+          if(currUser.status > 0)
+            Session.set('meetingAlert', '');
+          else
+            Session.set('meetingAlert', 'Friend is Waiting!');
+        }
+      }
+
+      // Get location and run query to find near yelp places
       Meteor.call('getLocation', function(err, location) {
+        // TODO: run query with variable search params based on time
         Meteor.call('yelpQuery', 'bars', true, location.loc[0], location.loc[1], function(err, results) {
           Session.set('yelpPlaces', results.businesses);
         });
@@ -134,7 +157,6 @@ Template.place.all_cats = function(categories) {
     return cat.indexOf('_') === -1;
   });
   return _.uniq(categories, false, function(cat) {
-    // console.log(cat, cat2);
     return cat.toUpperCase();
   }).join(', ');
 };
@@ -143,8 +165,12 @@ Template.main_page.meetingActionTaken = function() {
   return Session.get('meetingActionTaken');
 };
 
+Template.main_page.meetingAlert = function() {
+  return Session.get('meetingAlert');
+};
+
 Template.main_page.meetingClass = function(meeting) {
-  if(meeting === 'Accepted')
+  if(/[Aa]ccepted/.test(meeting))
     return 'text-success';
   else
     return 'text-error';
@@ -153,10 +179,18 @@ Template.main_page.meetingClass = function(meeting) {
 Template.main_page.events({
   'click #acceptMeeting': function() {
     Session.set('meetingActionTaken', 'Accepted');
+
+    // Update status in meetingRequest of specified user
+    var meeting = Session.get('meetingRequest');
+    Meteor.call('updateMeeting', meeting._id, 1);
   },
 
   'click #declineMeeting': function() {
     Session.set('meetingActionTaken', 'Declined');
+
+    // Update status in meetingRequest of specified user
+    var meeting = Session.get('meetingRequest');
+    Meteor.call('updateMeeting', meeting._id, 2);
   }
 });
 

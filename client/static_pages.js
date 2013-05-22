@@ -58,7 +58,7 @@ Meteor.Router.filters({
 Meteor.Router.filter('clearAlert', {except: ['settings_page']});
 Meteor.Router.filter('checkLoggedIn', {only: ['main_page', 'friends_page', 'calendar_page']});
 Meteor.Router.filter('newUser', {only: ['main_page', 'friends_page', 'calendar_page']});
-Meteor.Router.filter('clearSession');
+// Meteor.Router.filter('clearSession');
 
 /********************
 *** HEADER/FOOTER ***
@@ -78,7 +78,7 @@ Template.alert.alertMsg = function() {
 
 Template.alert.events({
   'click .close': function() {
-    Session.set('alert', undefined);
+    Session.set('alert', '');
   }
 });
 

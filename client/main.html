@@ -6,12 +6,15 @@
         <h4 class="text-center">New MeetMeet!</h4>
         <div class="meeting span6 offset3">
           {{> meeting new_meeting}}
-          <div class="text-center">
+          <div class="text-center" id="meetingActions">
             {{#if meetingActionTaken}}
               <span class="meeting-status {{meetingClass meetingActionTaken}}">{{meetingActionTaken}}</span>
             {{else}}
             <button class="btn btn-mini btn-success" id="acceptMeeting">Accept</button>
             <button class="btn btn-mini btn-danger" id="declineMeeting">Decline</button>
+            {{/if}}
+            {{#if meetingAlert}}
+              <div class="alert alert-warning meetingAlert animated fadeIn">{{meetingAlert}}</div>
             {{/if}}
           </div>
         </div>

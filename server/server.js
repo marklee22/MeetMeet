@@ -257,6 +257,11 @@ Meteor.startup(function () {
 
     userSettingsComplete: function() {
       Meteor.users.update({_id: this.userId}, {$set: {isNewUser: false}});
+    },
+
+    updateMeeting: function(id, status) {
+      console.log('Updating meeting id: ' + id + ' with (user, status): ' + this.userId + ', ' + status);
+      Meetings.update({_id: id, 'users.id': this.userId},{$set: {'users.$.status':1}});
     }
   });
 });

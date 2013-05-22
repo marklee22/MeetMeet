@@ -1,8 +1,9 @@
-/***********************
-*** SERVER-SIDE ONLY ***
-*** EVENT SCHEDULING ***
-***********************/
+/*************************
+*** SERVER-SIDE ONLY   ***
+*** MEETING SCHEDULING ***
+*************************/
 
+// Filters cover every hour and half hour time period in a 24 hour clock
 var eventTimeFilters = {
   'bfast': [7,7.5,8,8.5,9],
   'lun': [11.5,12,12.5,13,13.5],
@@ -11,6 +12,7 @@ var eventTimeFilters = {
   'ctails': [20,20.5,21,21.5,22,22.5]
 };
 
+// Day hash
 var days = {
   '0': 'Su',
   '1': 'M',
@@ -39,27 +41,23 @@ var _scheduleMeetings = function() {
   var invalidUsers = Meteor.users.find({days: {$in: [days[moment().format('d')]]}}, {fields: {_id:1}}).fetch() || [];
   var userIds = _.difference(freeUsers, invalidUsers);
 
-  // console.log(userIds);
-
-  // Find a meeting for each user
+  // Find a meeting for each user without a meeting
   _.each(userIds, function(user) {
-    // Get all mutual friends
+    // Get all mutual friends for a user
     var friends = Friends.findOne({userId: user._id}, {fields: {mutualFriends:1}});
-    if(friends.mutualFriends) {
-      // Pick one at random
-      // console.log('friends - ', friends.mutualFriends);
+    if(friends && friends.mutualFriends) {
+      // Pick a random friend (TODO: make randomization smarter)
       var rand = Math.floor(Math.random() * friends.mutualFriends.length);
-      // Find mutual times
+
+      // Find mutual times between user and random friend
       var times = _getMutualTimes(user._id, friends.mutualFriends[rand]);
 
+      // Mutual time found. Create meeting for both users based on mutual free time
       if(times.length > 0) {
-        // console.log('mutual times found');
         var time = Math.floor(Math.random() * times.length);
         var start = today + 3600 * times[time];
         var end = today + 3600 * times[time] + 1800;
 
-        // console.log(user._id, friends.mutualFriends[rand]);
-        // Schedule meeting if time found
         _createMeeting(user._id, friends.mutualFriends[rand], start, end);
       }
     }
@@ -68,7 +66,7 @@ var _scheduleMeetings = function() {
 
 /** Sets all expired meetings to expired **/
 var _clearExpiredMeetings = function() {
-  // console.log('Clearing all expired meetings');
+  console.log('Clearing all expired meetings');
   var meetings = Meetings.find({isExpired: false}, {fields: {_id:1, start:1, end:1}}).fetch() || [];
 
   // Expire any meetings that are older than the current time
@@ -98,20 +96,16 @@ var _getUsersWithoutMeetings = function() {
 /** Get the mutual times between two users **/
 var _getMutualTimes = function(userId, friendId) {
   console.log('Searching for mutual times between friends: ' + userId + ', ' + friendId);
-  // console.log(userTimeHash);
 
   // Calculate the beginning of today and tomorrow for a date range
   var today = moment().add('day', 1).startOf('day').unix();
   var tomorrow = moment().add('day',1).endOf('day').unix();
-  // console.log('start, end: ', today, tomorrow);
 
   // Get each user's free times and find the intersection
   var userFreeHours = _getFreeTimes(today, tomorrow, userId);
   var friendFreeHours = _getFreeTimes(today, tomorrow, friendId);
-  // console.log('user free hours: ',userFreeHours.join(','));
-  // console.log('friend free hours: ',friendFreeHours.join(','));
   var mutualTimes = _.intersection(userFreeHours, friendFreeHours);
-  // console.log('MUTUAL FREE TIME: ', mutualTime.join(','));
+
   return mutualTimes;
 };
 
@@ -127,7 +121,7 @@ var _getMutualTimes = function(userId, friendId) {
 var _getFreeTimes = function(start, end, userId) {
   console.log('Get free times for user: ', userId);
   var dayHourHash = _.range(0, 24, 0.5);
-  // console.log('**********');
+
   var userSchedule = Events.find({
     userId: userId,
     start: {$gte: start},
@@ -145,17 +139,15 @@ var _getFreeTimes = function(start, end, userId) {
   if(!eventPrefs)
     return [];
 
-  // Calculate all the event hours to filter for
+  // Calculate hour hash of all available times for user
   var eventHoursFilter = [];
   _.each(eventPrefs, function(pref) {
     eventHoursFilter = eventHoursFilter.concat(eventTimeFilters[pref]);
   });
 
-  // console.log('filter: ', eventHoursFilter);
+  // Calculate actual free + selected hours for that day
   dayHourHash = _.intersection(dayHourHash, eventHoursFilter);
-  // console.log('event filtered hours: ' + dayHourHash);
 
-  // console.log('filtered schedule: ', userSchedule);
   var busyTimes = [];
   _.each(userSchedule, function(event) {
     var startHour = (event.start - start) / 3600;
@@ -163,11 +155,8 @@ var _getFreeTimes = function(start, end, userId) {
     busyTimes = busyTimes.concat(_.range(startHour, endHour, 0.5));
   });
 
-  // console.log('busyTimes: ', busyTimes);
   dayHourHash = _.difference(dayHourHash, busyTimes);
-  // console.log('userFreeTime: ', dayHourHash);
 
-  // console.log('**********');
   return dayHourHash;
 };
 
@@ -181,12 +170,14 @@ var _createMeeting = function(userId, friendId, start, end) {
       {
         id: userId,
         name: user.profile.name,
-        fbookId: user.services.facebook.id
+        fbookId: user.services.facebook.id,
+        status: 0
       },
       {
         id: friendId,
         name: friend.profile.name,
-        fbookId: friend.services.facebook.id
+        fbookId: friend.services.facebook.id,
+        status: 0
       }
     ],
     start: start,
@@ -198,4 +189,4 @@ var _createMeeting = function(userId, friendId, start, end) {
 };
 
 // Run cronjob every 5 minutes
-Meteor.setInterval(_scheduleMeetings, 30000);
+Meteor.setInterval(_scheduleMeetings, 10000);
