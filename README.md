@@ -9,3 +9,9 @@ An automated meeting scheduler between two mutual Facebook friends based on mutu
    - Facebook
    - Google Calendar
    - Yelp Search
+
+###Installation
+
+1. Install meteor
+1. Install packages
+1. Run mrt
