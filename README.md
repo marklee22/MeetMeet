@@ -10,8 +10,40 @@ An automated meeting scheduler between two mutual Facebook friends based on mutu
    - Google Calendar
    - Yelp Search
 
-###Installation
+##Installation
 
-1. Install meteor
-1. Install packages
-1. Run mrt
+Install meteorite
+
+``` sh
+$ sudo -H npm install -g meteorite
+```
+
+Clone from github
+
+``` sh
+$ git clone https://github.com/marklee22/meetmeet.git
+$ cd MeetMeet
+```
+
+Run meteor
+
+``` sh
+$ mrt
+```
+    
+Browse to localhost:3000
+
+##Configuration
+1. Create Twitter API Application [here](https://dev.twitter.com/).
+2. Insert account credentials into database
+
+``` sh
+$ meteor mongo
+MongoDB shell version: 2.4.3
+connecting to: 127.0.0.1:3002/meteor
+> db.meteor_accounts_loginServiceConfiguration.insert({
+    "service" : ",
+    "consumerKey" : "YOUR_CONSUMER_KEY",
+    "secret" : "YOUR_CONSUMER_SECRET"
+})
+```
