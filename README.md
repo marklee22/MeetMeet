@@ -35,15 +35,20 @@ Browse to localhost:3000
 
 ##Configuration
 1. Create Twitter API Application [here](https://dev.twitter.com/).
-2. Insert account credentials into database
+2. Insert account credentials into database for OAuth
 
 ``` sh
 $ meteor mongo
 MongoDB shell version: 2.4.3
 connecting to: 127.0.0.1:3002/meteor
 > db.meteor_accounts_loginServiceConfiguration.insert({
-    "service" : ",
-    "consumerKey" : "YOUR_CONSUMER_KEY",
-    "secret" : "YOUR_CONSUMER_SECRET"
+    "service" : "google",
+    "clientId" : "YOUR_CLIENT_ID",
+    "secret" : "YOUR_CLIENT_SECRET"
+})
+> db.meteor_accounts_loginServiceConfiguration.insert({
+    "service" : "google",
+    "appId" : "YOUR_APP_ID",
+    "secret" : "YOUR_APP_SECRET"
 })
 ```
