@@ -51,4 +51,11 @@ connecting to: 127.0.0.1:3002/meteor
     "appId" : "YOUR_APP_ID",
     "secret" : "YOUR_APP_SECRET"
 })
+> db.meteor_accounts_loginServiceConfiguration.insert({
+   "service" : "yelp",
+   "consumerKey" : "YOUR_CONSUMER_KEY",
+   "consumerSecret" : "YOUR_CONSUMER_SECRET",
+   "accessToken" : "YOUR_ACCESS_TOKEN",
+   "accessTokenSecret" : "YOUR_ACCESS_TOKEN_SECRET"
+})
 ```
