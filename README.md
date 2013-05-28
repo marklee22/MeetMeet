@@ -34,8 +34,12 @@ $ mrt
 Browse to localhost:3000
 
 ##Configuration
-1. Create Twitter API Application [here](https://dev.twitter.com/).
-2. Insert account credentials into database for OAuth
+1. Create Facebook API Application [here](https://dev.twitter.com/).
+1. Create Yelp API Application [here](http://www.yelp.com/developers/getting_started/api_access)
+1. Create Google OAuth Application [here](https://code.google.com/apis/console)
+   1. Enable maps and calendar APIs
+   2. Replace maps API key in google script tag
+1. Insert account credentials into database for OAuth
 
 ``` sh
 $ meteor mongo
